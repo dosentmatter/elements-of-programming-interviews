@@ -6,8 +6,11 @@ class MaxDiff:
     @staticmethod
     def brute_force(S):
         """
-        Return max difference by checking all differences.
+        Return max difference by using brute force.
+
+        Checks all possible differences and finds the max.
         """
+
         max_diff = -float("inf")
         length = len(S)
         for i in range(length - 1):
@@ -21,10 +24,13 @@ class MaxDiff:
     @classmethod
     def divide_and_conquer(cls, S):
         """
-        Return max difference by splitting list in 2. Max difference is the max difference
-        of the left, the right, and the between. The between is the max of the right minus
+        Return max difference by using divide and conquer.
+
+        Splits list in 2. Max difference is the max difference of the left
+        the right, and the between. The between is the max of the right minus
         the max of the left.
         """
+
         length = len(S)
         if (length == 1):
             return -float("inf")
@@ -38,8 +44,12 @@ class MaxDiff:
     @staticmethod
     def previous_min(S):
         """
-        Return max difference by keeping track of the previous minimum and the current max difference.
+        Return max difference by keeping track of the previous minimum.
+
+        Uses the previous minimum to calculate a new difference and update
+        the current max difference if it is bigger.
         """
+
         mini = float("inf")
         max_diff = -float("inf")
         for i in range(len(S)):
