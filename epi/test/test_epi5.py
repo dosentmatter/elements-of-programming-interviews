@@ -1,5 +1,6 @@
 import unittest
 from epi.epi5 import *
+import random
 
 class P1_Parity_Test(unittest.TestCase):
 
@@ -73,6 +74,47 @@ class P4_ClosestSameBits_Test(unittest.TestCase):
         self.assertEqual(first_consecutive_diff(5), 6)
         self.assertEqual(first_consecutive_diff(9), 10)
         self.assertEqual(first_consecutive_diff(12), 10)
+        
+class P5_Powerset_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P5_Powerset
+        
+        f = frozenset
+        
+        self.input = []
+        self.output = []
+        
+        self.input.append({})
+        self.output.append({ f({}) })
+        
+        self.input.append({0})
+        self.output.append({ f({}), f({0}) })
+        
+        self.input.append({0, 1})
+        self.output.append({ f({}), f({0}), f({1}), f({0, 1}) })
+        
+        self.input.append({0, 1, 2})
+        self.output.append({ f({}), f({0}), f({1}), f({0, 1}),
+                         f({2}), f({0, 2}), f({1, 2}), f({0, 1, 2}) })
+
+    def test_bit_array_map(self):
+        bit_array_map = self.cls.bit_array_map
+        self.assertEqual(bit_array_map(self.input[0]), self.output[0])
+        self.assertEqual(bit_array_map(self.input[1]), self.output[1])
+        self.assertEqual(bit_array_map(self.input[2]), self.output[2])
+        self.assertEqual(bit_array_map(self.input[3]), self.output[3])
+
+    def test_bit_array_map_rand(self):
+        bit_array_map = self.cls.bit_array_map
+
+        NUM_TESTS_RUN = 10
+        MAX_SET_SIZE = 15
+        for i in range(NUM_TESTS_RUN):
+            random_length = random.randint(0, MAX_SET_SIZE)
+            S = set(range(random_length))
+            powerset_length = len(bit_array_map(S))
+            self.assertEqual(powerset_length, 2 ** random_length)
 
 def main():
     unittest.main()

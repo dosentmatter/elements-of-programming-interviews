@@ -8,8 +8,11 @@ class P1_Parity:
     @staticmethod
     def direct(x):
         """
-        Return the parity of x by iterating through all bits.
+        Return the parity of x with direct calculation.
+
+        Iterates through all bits and xors them.
         """
+
         result = 0
         while (x):
             result ^= (x & 1)
@@ -19,12 +22,15 @@ class P1_Parity:
     @staticmethod
     def drop(x):
         """
-        Return parity by iterating through high bits.
+        Return parity by only looking at high bits.
+
+        Iterates through high bits by using drop_lsb() and xors them.
         """
+
         result = 0
         while (x):
             result ^= 1
-            x = bitmanip.drop_LSB(x)
+            x = bitmanip.drop_lsb(x)
         return result
 
     P = []
@@ -33,6 +39,7 @@ class P1_Parity:
         """
         Precompute 16-bit number parities.
         """
+
         for i in range(2**16):
             cls.P.append(cls.drop(i))
 
@@ -41,6 +48,7 @@ class P1_Parity:
         """
         Return parity by using the precomputed parities.
         """
+
         return cls.P[(x >> 48) & 0xFFFF] \
               ^ cls.P[(x >> 32) & 0xFFFF] \
               ^ cls.P[(x >> 16) & 0xFFFF] \
@@ -58,6 +66,7 @@ class P2_SwapBits:
         """
         Swap by toggling bits i and j of x if different.
         """
+
         if (bitmanip.get_bit(x, i) != bitmanip.get_bit(x, j)):
             x = bitmanip.toggle_bit(bitmanip.toggle_bit(x, i), j)
         return x
@@ -70,8 +79,9 @@ class P3_Reverse:
     @staticmethod
     def swap_reverse(x, n=64):
         """
-        Return reverse by swapping opposite pairs.
+        Return reverse by swapping opposite-sided pairs.
         """
+
         for i in range(n // 2):
             opposite_i = (n - 1) - i
             x = bitmanip.swap_bits(x, i, opposite_i)
@@ -83,6 +93,7 @@ class P3_Reverse:
         """
         Precompute 16-bit number reverses.
         """
+
         for i in range(2**16):
             cls.P.append(cls.swap_reverse(i, 16))
 
@@ -91,6 +102,7 @@ class P3_Reverse:
         """
         Return reverse by using the precomputed reverses.
         """
+
         return cls.P[(x >> 48) & 0xFFFF] \
               | cls.P[(x >> 32) & 0xFFFF] << 16 \
               | cls.P[(x >> 16) & 0xFFFF] << 32 \
@@ -108,10 +120,13 @@ class P4_ClosestSameBits:
     @staticmethod
     def first_consecutive_diff(x):
         """
-        Return y by iterating through the bits of x starting from the LSB
+        Return y by swapping the first two consecutive bits that differ.
+
+        Iterate through the bits of x starting from the LSB
         and swapping the first two consecutive bits that differ. This works,
         intuitively, because it changes the least significant bits possible.
         """
+
         for i in range(63):
             if (bitmanip.get_bit(x, i) != bitmanip.get_bit(x, i + 1)):
                 x = bitmanip.swap_bits(x, i, i + 1)
@@ -123,4 +138,30 @@ class P5_Powerset:
     with elements separated by commas.
     """
 
+    @staticmethod
+    def bit_array_map(S, output=False):
+        """
+        Return the powerset of S. Print the subsets if output == True.
+
+        Iterates through all len(S)-bit numbers and maps each number to
+        a subset to create the powerset.
+        """
+
+
+        if not isinstance(S, set):
+            S = set(S)
+
+        L = list(S)
+        log2_cached = bitmanip.log2_cached_creator()
+        powerset = set()
+        for i in range(2 ** len(L)):
+            subset = bitmanip.bit_array_select(L, i, log2_cached)
+            powerset.add(subset)
+            if (output):
+                print(subset)
+        return powerset
+
+    @classmethod
+    def recursive(cls, S):
+        powerset = set()
 
