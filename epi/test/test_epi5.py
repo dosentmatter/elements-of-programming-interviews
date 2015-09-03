@@ -116,6 +116,42 @@ class P5_Powerset_Test(unittest.TestCase):
             powerset_length = len(bit_array_map(S))
             self.assertEqual(powerset_length, 2 ** random_length)
 
+    def test_recursive_default(self):
+        recursive_default = self.cls.recursive_default
+        self.assertEqual(recursive_default(self.input[0]), self.output[0])
+        self.assertEqual(recursive_default(self.input[1]), self.output[1])
+        self.assertEqual(recursive_default(self.input[2]), self.output[2])
+        self.assertEqual(recursive_default(self.input[3]), self.output[3])
+
+    def test_recursive_default_rand(self):
+        recursive_default = self.cls.recursive_default
+
+        NUM_TESTS_RUN = 10
+        MAX_SET_SIZE = 15
+        for i in range(NUM_TESTS_RUN):
+            random_length = random.randint(0, MAX_SET_SIZE)
+            S = set(range(random_length))
+            powerset_length = len(recursive_default(S))
+            self.assertEqual(powerset_length, 2 ** random_length)
+
+    def test_recursive_choice(self):
+        recursive_choice = self.cls.recursive_choice
+        self.assertEqual(recursive_choice(self.input[0]), self.output[0])
+        self.assertEqual(recursive_choice(self.input[1]), self.output[1])
+        self.assertEqual(recursive_choice(self.input[2]), self.output[2])
+        self.assertEqual(recursive_choice(self.input[3]), self.output[3])
+
+    def test_recursive_choice_rand(self):
+        recursive_choice = self.cls.recursive_choice
+
+        NUM_TESTS_RUN = 10
+        MAX_SET_SIZE = 15
+        for i in range(NUM_TESTS_RUN):
+            random_length = random.randint(0, MAX_SET_SIZE)
+            S = set(range(random_length))
+            powerset_length = len(recursive_choice(S))
+            self.assertEqual(powerset_length, 2 ** random_length)
+
 def main():
     unittest.main()
 

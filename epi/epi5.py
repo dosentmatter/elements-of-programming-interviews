@@ -83,8 +83,8 @@ class P3_Reverse:
         """
 
         for i in range(n // 2):
-            opposite_i = (n - 1) - i
-            x = bitmanip.swap_bits(x, i, opposite_i)
+            i_opposite = (n - 1) - i
+            x = bitmanip.swap_bits(x, i, i_opposite)
         return x
 
     P = []
@@ -145,6 +145,9 @@ class P5_Powerset:
 
         Iterates through all len(S)-bit numbers and maps each number to
         a subset to create the powerset.
+
+        This is the slowest powerset method. For a set of size 22, timeit
+        said it took ~40.76s.
         """
 
 
@@ -161,7 +164,207 @@ class P5_Powerset:
                 print(subset)
         return powerset
 
-    @classmethod
-    def recursive(cls, S):
-        powerset = set()
+    @staticmethod
+    def recursive_default(S, output=False):
+        """
+        Return the powerset of S. Print the subsets if output == True.
 
+        For a call on a set of size N, there will be 2**N calls additions
+        to powerset and 2**N calls to helper().
+
+        This is the second fastest powerset method. For a set of size 22,
+        timeit said it took ~6.53s.
+        """
+
+        if not isinstance(S, set):
+            S = set(S)
+
+        L = list(S)
+        powerset = set()
+        def helper(start_i=0, subset=set()):
+            """
+            Populate powerset with the powerset of the elements L[start_i:]
+
+            Each element defaults to not in the current subset. This is why
+            subsets are added at each call to helper() - elements not added
+            are defaulted.
+
+            :param start_i: the index of L to start generating the powerset.
+            :param subset: The current subset of S.
+            """
+
+            powerset.add(frozenset(subset))
+            if (output):
+                print(subset)
+
+            for i in range(start_i, len(L)):
+                subset.add(L[i])
+                helper(i + 1, subset)
+                subset.remove(L[i])
+        helper()
+        return powerset
+
+    @staticmethod
+    def recursive_choice(S, output=False):
+        """
+        Return the powerset of S. Print the subsets if output == True.
+
+        For a call on a set of size N, there will be 2**N calls additions
+        to powerset and 2**(N+1) - 1 calls to helper().
+
+        This is the second fastest powerset method. For a set of size 22,
+        timeit said it took ~6.34s.
+
+        Although it has more calls to helper than recursive_default(), I
+        think it is faster because recursive_default() has to assign
+        i during the for loop. They both have the same number of set additions,
+        removes, and branches (if and for).
+        """
+
+        if not isinstance(S, set):
+            S = set(S)
+
+        L = list(S)
+        powerset = set()
+        def helper(start_i=0, subset=set()):
+            """
+            Populate powerset with the powerset of the elements L[start_i:]
+
+            At each call of helper(), two choices are made to include and not
+            include the current element of the set into the subset. This
+            is why subset is only added to subset at the end of the
+            call stack, when a choice is made for all elements.
+
+            :param start_i: the index of L to start generating the powerset.
+            :param subset: The current subset of S.
+            """
+
+            if (start_i == len(L)):
+                powerset.add(frozenset(subset))
+                if (output):
+                    print(subset)
+            else:
+                subset.add(L[start_i])
+                helper(start_i + 1, subset)
+                subset.remove(L[start_i])
+                helper(start_i + 1, subset)
+        helper()
+        return powerset
+
+#class P5_1_Subsets:
+#    """
+#    Print all subsets of size k o {1, 2, 3, ..., n}.
+#    """
+#
+#    @staticmethod
+#    def bit_array_map(S, output=False):
+#        """
+#        Return the powerset of S. Print the subsets if output == True.
+#
+#        Iterates through all len(S)-bit numbers and maps each number to
+#        a subset to create the powerset.
+#
+#        This is the slowest powerset method. For a set of size 22, timeit
+#        said it took ~40.76s.
+#        """
+#
+#
+#        if not isinstance(S, set):
+#            S = set(S)
+#
+#        L = list(S)
+#        log2_cached = bitmanip.log2_cached_creator()
+#        powerset = set()
+#        for i in range(2 ** len(L)):
+#            subset = bitmanip.bit_array_select(L, i, log2_cached)
+#            powerset.add(subset)
+#            if (output):
+#                print(subset)
+#        return powerset
+#
+#    @staticmethod
+#    def recursive_default(S, output=False):
+#        """
+#        Return the powerset of S. Print the subsets if output == True.
+#
+#        For a call on a set of size N, there will be 2**N calls additions
+#        to powerset and 2**N calls to helper().
+#
+#        This is the second fastest powerset method. For a set of size 22,
+#        timeit said it took ~6.53s.
+#        """
+#
+#        if not isinstance(S, set):
+#            S = set(S)
+#
+#        L = list(S)
+#        powerset = set()
+#        def helper(start_i=0, subset=set()):
+#            """
+#            Populate powerset with the powerset of the elements L[start_i:]
+#
+#            Each element defaults to not in the current subset. This is why
+#            subsets are added at each call to helper() - elements not added
+#            are defaulted.
+#
+#            :param start_i: the index of L to start generating the powerset.
+#            :param subset: The current subset of S.
+#            """
+#
+#            powerset.add(frozenset(subset))
+#            if (output):
+#                print(subset)
+#
+#            for i in range(start_i, len(L)):
+#                subset.add(L[i])
+#                helper(i + 1, subset)
+#                subset.remove(L[i])
+#        helper()
+#        return powerset
+#
+#    @staticmethod
+#    def recursive_choice(S, output=False):
+#        """
+#        Return the powerset of S. Print the subsets if output == True.
+#
+#        For a call on a set of size N, there will be 2**N calls additions
+#        to powerset and 2**(N+1) - 1 calls to helper().
+#
+#        This is the second fastest powerset method. For a set of size 22,
+#        timeit said it took ~6.34s.
+#
+#        Although it has more calls to helper than recursive_default(), I
+#        think it is faster because recursive_default() has to assign
+#        i during the for loop. They both have the same number of set additions,
+#        removes, and branches (if and for).
+#        """
+#
+#        if not isinstance(S, set):
+#            S = set(S)
+#
+#        L = list(S)
+#        powerset = set()
+#        def helper(start_i=0, subset=set()):
+#            """
+#            Populate powerset with the powerset of the elements L[start_i:]
+#
+#            At each call of helper(), two choices are made to include and not
+#            include the current element of the set into the subset. This
+#            is why subset is only added to subset at the end of the
+#            call stack, when a choice is made for all elements.
+#
+#            :param start_i: the index of L to start generating the powerset.
+#            :param subset: The current subset of S.
+#            """
+#
+#            if (start_i == len(L)):
+#                powerset.add(frozenset(subset))
+#                if (output):
+#                    print(subset)
+#            else:
+#                subset.add(L[start_i])
+#                helper(start_i + 1, subset)
+#                subset.remove(L[start_i])
+#                helper(start_i + 1, subset)
+#        helper()
+#        return powerset
