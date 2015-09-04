@@ -1,10 +1,10 @@
-class MaxDiff:
+class Max_Diff:
     """
-    Compute the max difference in an array, S.
+    Compute the max difference in a list, L.
     """
 
     @staticmethod
-    def brute_force(S):
+    def brute_force(L):
         """
         Return max difference by using brute force.
 
@@ -12,17 +12,17 @@ class MaxDiff:
         """
 
         max_diff = -float("inf")
-        length = len(S)
+        length = len(L)
         for i in range(length - 1):
-            start = S[i]
+            start = L[i]
             for j in range(i + 1, length):
-                end = S[j]
+                end = L[j]
                 diff = end - start
                 max_diff = max(max_diff, diff)
         return max_diff
 
     @classmethod
-    def divide_and_conquer(cls, S):
+    def divide_and_conquer(cls, L):
         """
         Return max difference by using divide and conquer.
 
@@ -31,18 +31,18 @@ class MaxDiff:
         the max of the left.
         """
 
-        length = len(S)
-        if (length == 1):
+        length = len(L)
+        if (length <= 1):
             return -float("inf")
-        L = S[0 : length//2]
-        R = S[length//2 :]
-        l = cls.divide_and_conquer(L)
-        r = cls.divide_and_conquer(R)
-        m = max(R) - min(L)
-        return max(l, r, m)
+        left_L = L[0 : length//2]
+        right_L = L[length//2 :]
+        left_max_diff = cls.divide_and_conquer(left_L)
+        right_max_diff = cls.divide_and_conquer(right_L)
+        middle_max_diff = max(right_L) - min(left_L)
+        return max(left_max_diff, right_max_diff, middle_max_diff)
 
     @staticmethod
-    def previous_min(S):
+    def previous_min(L):
         """
         Return max difference by keeping track of the previous minimum.
 
@@ -52,7 +52,7 @@ class MaxDiff:
 
         mini = float("inf")
         max_diff = -float("inf")
-        for i in range(len(S)):
-            max_diff = max(max_diff, S[i] - mini) # find max_diff using PREVIOUS minimum
-            mini = min(mini, S[i]) # after finding current max_diff, can update the previous minimum
+        for i in range(len(L)):
+            max_diff = max(max_diff, L[i] - mini) # find max_diff using PREVIOUS minimum
+            mini = min(mini, L[i]) # after finding current max_diff, can update the previous minimum
         return max_diff
