@@ -1,8 +1,9 @@
 from epi.util import bitmanip
+import itertools
 
 class P1_Parity:
     """
-    Compute the parity of a 64-bit whole number x.
+    Compute the parity of a 64-bit (or more) whole number x.
     """
 
     @staticmethod
@@ -24,41 +25,80 @@ class P1_Parity:
         """
         Return parity by only looking at high bits.
 
-        Iterates through high bits by using drop_lsb() and xors them.
+        Iterates through high bits by using drop_lowest_set_bit()
+        and xors them.
         """
 
         result = 0
         while (x):
             result ^= 1
-            x = bitmanip.drop_lsb(x)
+            x = bitmanip.drop_lowest_set_bit(x)
         return result
 
-    P = []
+    _cache = []
+    _cache_bit_size = 0
+    _cache_filled = False
+
     @classmethod
-    def initialize(cls):
+    def fill_cache(cls, cache_bit_size=16):
         """
-        Precompute 16-bit number parities.
+        Precompute _cache_bit_size-bit number parities and add to _cache.
         """
 
-        for i in range(2**16):
-            cls.P.append(cls.drop(i))
+        cls.empty_cache()
+
+        cls._cache_bit_size = cache_bit_size
+        for i in range(2**cls._cache_bit_size):
+            cls._cache.append(cls.drop(i))
+
+        cls._cache_filled = True
+
+    @classmethod
+    def empty_cache(cls):
+        """
+        Empty _cache.
+        """
+
+        del cls._cache[:]
+        _cache_bit_size = 0
+        _cache_filled = False
 
     @classmethod
     def precompute(cls, x):
         """
         Return parity by using the precomputed parities.
+
+        This grabs each set of bits of cls._cache_bit_size and maps them
+        to the parities.
+        In effect, it does this:
+        return cls._cache[(x >> 48) & 0xFFFF] \
+              ^ cls._cache[(x >> 32) & 0xFFFF] \
+              ^ cls._cache[(x >> 16) & 0xFFFF] \
+              ^ cls._cache[x & 0xFFFF]
+
+        It also finishes up if x.bit_length() isn't divisible by
+        cls._cache_bit_size.
         """
 
-        return cls.P[(x >> 48) & 0xFFFF] \
-              ^ cls.P[(x >> 32) & 0xFFFF] \
-              ^ cls.P[(x >> 16) & 0xFFFF] \
-              ^ cls.P[x & 0xFFFF]
+        if (not cls._cache_filled):
+            cls.fill_cache()
 
-P1_Parity.initialize()
+        number_bits = x.bit_length()
+        answer = 0
+        divisible_split = number_bits // cls._cache_bit_size
+        for i in range(divisible_split):
+            answer ^= cls._cache[bitmanip.get_bits(x, i, cls._cache_bit_size)]
+
+        if (number_bits % cls._cache_bit_size):
+            answer ^= cls._cache[bitmanip.get_bits(x,
+                                              divisible_split,
+                                              cls._cache_bit_size)]
+
+        return answer
 
 class P2_SwapBits:
     """
-    Swap bits at indices i and j of a 64-bit integer x.
+    Swap bits at indices i and j of a 64-bit (or more) integer x.
     """
 
     @staticmethod
@@ -73,42 +113,121 @@ class P2_SwapBits:
 
 class P3_Reverse:
     """
-    Reverse the bits of a 64-bit integer x.
+    Reverse the bits of a 64-bit (or more) integer x.
     """
 
     @staticmethod
-    def swap_reverse(x, n=64):
+    def swap_reverse(x, start=0, end=None):
         """
-        Return reverse by swapping opposite-sided pairs.
+        Return x with bits from start (inclusive) to end (exclusive) reversed.
         """
 
-        for i in range(n // 2):
-            i_opposite = (n - 1) - i
+        if (end == None):
+            end = x.bit_length()
+
+        number_bits = end - start
+        for offset in range(0, number_bits // 2):
+            i = start + offset
+            i_opposite = (end - 1) - offset
             x = bitmanip.swap_bits(x, i, i_opposite)
         return x
 
-    P = []
     @classmethod
-    def initialize(cls):
+    def swap_reverse_size(cls, x, size=64):
         """
-        Precompute 16-bit number reverses.
+        Returns swap_reverse with size bits starting from 0.
         """
 
-        for i in range(2**16):
-            cls.P.append(cls.swap_reverse(i, 16))
+        return cls.swap_reverse(x, 0, size)
+
+    _cache = []
+    _cache_bit_size = 16
+    _cache_filled = False
 
     @classmethod
-    def precompute(cls, x):
+    def fill_cache(cls, cache_bit_size=16):
         """
-        Return reverse by using the precomputed reverses.
+        Precompute _cache_bit_size-bit number reverses and add to _cache.
+        Deletes pre-existing _cache.
         """
 
-        return cls.P[(x >> 48) & 0xFFFF] \
-              | cls.P[(x >> 32) & 0xFFFF] << 16 \
-              | cls.P[(x >> 16) & 0xFFFF] << 32 \
-              | cls.P[x & 0xFFFF] << 48
+        cls.empty_cache()
 
-P3_Reverse.initialize()
+        cls._cache_bit_size = cache_bit_size
+        for i in range(2**cls._cache_bit_size):
+            cls._cache.append(cls.swap_reverse_size(i, cls._cache_bit_size))
+
+        cls._cache_filled = True
+
+    @classmethod
+    def empty_cache(cls):
+        """
+        Empty _cache.
+        """
+
+        del cls._cache[:]
+        _cache_bit_size = 0
+        _cache_filled = False
+
+    @classmethod
+    def precompute(cls, x, start=0, end=None):
+        """
+        Return x with bits from start (inclusive) to end (exclusive) reversed
+        by using the precomputed reverses.
+
+        This grabs each set of bits of cls._cache_bit_size and maps them
+        to the reverses.
+        In effect, it does this:
+        return cls._cache[(x >> 48) & 0xFFFF] \
+              | cls._cache[(x >> 32) & 0xFFFF] << 16 \
+              | cls._cache[(x >> 16) & 0xFFFF] << 32 \
+              | cls._cache[x & 0xFFFF] << 48
+
+        It also finishes up if number_bits isn't divisible by
+        cls._cache_bit_size.
+        """
+
+        if (not cls._cache_filled):
+            cls.fill_cache()
+
+        if (end == None):
+            end = x.bit_length()
+
+        number_bits = end - start
+        answer = 0
+        divisible_split = number_bits // cls._cache_bit_size
+        for i in range(divisible_split):
+            part_answer = cls._cache[bitmanip.get_bits(x,
+                                                  i,
+                                                  cls._cache_bit_size,
+                                                  start)]
+            shift_amount = end - ((i + 1) * cls._cache_bit_size)
+            part_answer = bitmanip.shift_bits(part_answer, shift_amount)
+
+            answer |= part_answer
+
+        if (number_bits % cls._cache_bit_size):
+            part_answer = cls._cache[bitmanip.get_bits(x,
+                                                  divisible_split,
+                                                  cls._cache_bit_size,
+                                                  start)]
+            shift_amount = end - ((divisible_split + 1) * cls._cache_bit_size)
+            part_answer = bitmanip.shift_bits(part_answer, shift_amount)
+
+            answer |= part_answer
+
+        mask = bitmanip.ones(number_bits, start)
+        answer &= mask
+        answer |= x & ~mask
+        return answer
+
+    @classmethod
+    def precompute_size(cls, x, size=64):
+        """
+        Returns precompute with size bits starting from 0.
+        """
+
+        return cls.precompute(x, 0, size)
 
 class P4_ClosestSameBits:
     """
@@ -118,7 +237,7 @@ class P4_ClosestSameBits:
     """
 
     @staticmethod
-    def first_consecutive_diff(x):
+    def first_consecutive_diff_iterate(x):
         """
         Return y by swapping the first two consecutive bits that differ.
 
@@ -131,6 +250,10 @@ class P4_ClosestSameBits:
             if (bitmanip.get_bit(x, i) != bitmanip.get_bit(x, i + 1)):
                 x = bitmanip.swap_bits(x, i, i + 1)
                 return x
+
+    #@staticmethod
+    #def first_consecutive_diff_bitmanip(x):
+    #    pass
 
 class P5_Powerset:
     """

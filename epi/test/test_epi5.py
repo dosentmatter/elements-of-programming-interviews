@@ -1,5 +1,6 @@
 import unittest
 from epi.epi5 import *
+from epi.util import bitmanip
 import random
 
 class P1_Parity_Test(unittest.TestCase):
@@ -15,6 +16,8 @@ class P1_Parity_Test(unittest.TestCase):
         self.assertEqual(direct(13), 1)
         self.assertEqual(direct(1), 1)
         self.assertEqual(direct(2), 1)
+        self.assertEqual(direct(bitmanip.ones(64)), 0)
+        self.assertEqual(direct(bitmanip.ones(70)), 0)
 
     def test_drop(self):
         drop = self.cls.drop
@@ -24,8 +27,12 @@ class P1_Parity_Test(unittest.TestCase):
         self.assertEqual(drop(13), 1)
         self.assertEqual(drop(1), 1)
         self.assertEqual(drop(2), 1)
+        self.assertEqual(drop(bitmanip.ones(64)), 0)
+        self.assertEqual(drop(bitmanip.ones(70)), 0)
 
     def test_precompute(self):
+        self.cls.fill_cache()
+
         precompute = self.cls.precompute
         self.assertEqual(precompute(5), 0)
         self.assertEqual(precompute(3), 0)
@@ -33,6 +40,21 @@ class P1_Parity_Test(unittest.TestCase):
         self.assertEqual(precompute(13), 1)
         self.assertEqual(precompute(1), 1)
         self.assertEqual(precompute(2), 1)
+        self.assertEqual(precompute(bitmanip.ones(64)), 0)
+        self.assertEqual(precompute(bitmanip.ones(70)), 0)
+
+    def test_precompute_rand(self):
+        drop = self.cls.drop
+        precompute = self.cls.precompute
+
+        NUM_TESTS_RUN = 10
+        MAX_BIT_SIZE = 256
+        MAX_CACHE_BIT_SIZE = 20
+        for _ in range(NUM_TESTS_RUN):
+            self.cls.fill_cache(random.randint(1, MAX_CACHE_BIT_SIZE))
+
+            random_number = random.randint(0, 2**MAX_BIT_SIZE)
+            self.assertEqual(drop(random_number), precompute(random_number))
 
 class P2_SwapBits_Test(unittest.TestCase):
 
@@ -52,28 +74,74 @@ class P3_Reverse_Test(unittest.TestCase):
 
     def test_swap_reverse(self):
         swap_reverse = self.cls.swap_reverse
-        self.assertEqual(swap_reverse(0xAAAAAAAAAAAAAAAA), 0x5555555555555555)
-        self.assertEqual(swap_reverse(0x5555555555555555), 0xAAAAAAAAAAAAAAAA)
-        self.assertEqual(swap_reverse(1), 1 << 63)
-        self.assertEqual(swap_reverse(3), 3 << 62)
+        self.assertEqual(swap_reverse(0xAAAAAAAAAAAAAAAA, 4, 60),
+                                           0xA55555555555555A)
+        self.assertEqual(swap_reverse(0x5555555555555555, 4, 60),
+                                           0x5AAAAAAAAAAAAAA5)
+        self.assertEqual(swap_reverse(1, 0, 59), 1 << 58)
+        self.assertEqual(swap_reverse(3, 1, 4), 9)
+        self.assertEqual(swap_reverse(0b00110011, 2, 6), 0b00001111)
+
+    def test_swap_reverse_size(self):
+        swap_reverse_size = self.cls.swap_reverse_size
+        self.assertEqual(swap_reverse_size(0xAAAAAAAAAAAAAAAA),
+                                           0x5555555555555555)
+        self.assertEqual(swap_reverse_size(0x5555555555555555),
+                                           0xAAAAAAAAAAAAAAAA)
+        self.assertEqual(swap_reverse_size(1), 1 << 63)
+        self.assertEqual(swap_reverse_size(3), 3 << 62)
 
     def test_precompute(self):
         precompute = self.cls.precompute
-        self.assertEqual(precompute(0xAAAAAAAAAAAAAAAA), 0x5555555555555555)
-        self.assertEqual(precompute(0x5555555555555555), 0xAAAAAAAAAAAAAAAA)
-        self.assertEqual(precompute(1), 1 << 63)
-        self.assertEqual(precompute(3), 3 << 62)
+
+        self.cls.fill_cache(5)
+
+        self.assertEqual(precompute(0xAAAAAAAAAAAAAAAA, 4, 60),
+                                           0xA55555555555555A)
+        self.assertEqual(precompute(0x5555555555555555, 4, 60),
+                                           0x5AAAAAAAAAAAAAA5)
+        self.assertEqual(precompute(1, 0, 59), 1 << 58)
+        self.assertEqual(precompute(3, 1, 4), 9)
+        self.assertEqual(precompute(0b00110011, 2, 6), 0b00001111)
+
+    def test_precompute_size(self):
+        precompute_size = self.cls.precompute_size
+
+        self.cls.fill_cache()
+
+        self.assertEqual(precompute_size(0xAAAAAAAAAAAAAAAA), 0x5555555555555555)
+        self.assertEqual(precompute_size(0x5555555555555555), 0xAAAAAAAAAAAAAAAA)
+        self.assertEqual(precompute_size(1), 1 << 63)
+        self.assertEqual(precompute_size(3), 3 << 62)
+
+    def test_precompute_rand(self):
+        swap_reverse = self.cls.swap_reverse
+        precompute = self.cls.precompute
+
+        NUM_TESTS_RUN = 10
+        MAX_BIT_SIZE = 256
+        MAX_CACHE_BIT_SIZE = 20
+        for _ in range(NUM_TESTS_RUN):
+            self.cls.fill_cache(random.randint(1, MAX_CACHE_BIT_SIZE))
+
+            random_number = random.randint(0, 2**MAX_BIT_SIZE)
+            bit_length = random_number.bit_length()
+            random_start = random.randint(0, bit_length)
+            random_end = random.randint(random_start, bit_length)
+            self.assertEqual(
+                    swap_reverse(random_number, random_start, random_end),
+                    precompute(random_number, random_start, random_end))
 
 class P4_ClosestSameBits_Test(unittest.TestCase):
 
     def setUp(self):
         self.cls = P4_ClosestSameBits
 
-    def test_first_consecutive_diff(self):
-        first_consecutive_diff = self.cls.first_consecutive_diff
-        self.assertEqual(first_consecutive_diff(5), 6)
-        self.assertEqual(first_consecutive_diff(9), 10)
-        self.assertEqual(first_consecutive_diff(12), 10)
+    def test_first_consecutive_diff_iterate(self):
+        first_consecutive_diff_iterate = self.cls.first_consecutive_diff_iterate
+        self.assertEqual(first_consecutive_diff_iterate(5), 6)
+        self.assertEqual(first_consecutive_diff_iterate(9), 10)
+        self.assertEqual(first_consecutive_diff_iterate(12), 10)
         
 class P5_Powerset_Test(unittest.TestCase):
 
@@ -110,7 +178,7 @@ class P5_Powerset_Test(unittest.TestCase):
 
         NUM_TESTS_RUN = 10
         MAX_SET_SIZE = 15
-        for i in range(NUM_TESTS_RUN):
+        for _ in range(NUM_TESTS_RUN):
             random_length = random.randint(0, MAX_SET_SIZE)
             S = set(range(random_length))
             powerset_length = len(bit_array_map(S))
@@ -128,7 +196,7 @@ class P5_Powerset_Test(unittest.TestCase):
 
         NUM_TESTS_RUN = 10
         MAX_SET_SIZE = 15
-        for i in range(NUM_TESTS_RUN):
+        for _ in range(NUM_TESTS_RUN):
             random_length = random.randint(0, MAX_SET_SIZE)
             S = set(range(random_length))
             powerset_length = len(recursive_default(S))
@@ -146,7 +214,7 @@ class P5_Powerset_Test(unittest.TestCase):
 
         NUM_TESTS_RUN = 10
         MAX_SET_SIZE = 15
-        for i in range(NUM_TESTS_RUN):
+        for _ in range(NUM_TESTS_RUN):
             random_length = random.randint(0, MAX_SET_SIZE)
             S = set(range(random_length))
             powerset_length = len(recursive_choice(S))

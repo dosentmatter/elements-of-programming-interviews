@@ -1,3 +1,10 @@
+def ones(n, offset=0):
+    """
+    Return a number that is a stream of n 1's with an offset.
+    """
+
+    return ((1 << n) - 1) << offset
+
 def get_bit(x, k):
     """
     Return the k-th bit of x.
@@ -12,28 +19,54 @@ def toggle_bit(x, k):
 
     return (1 << k) ^ x
 
-def drop_lsb(x):
+def drop_lowest_set_bit(x):
     """
-    Return x with the LSB (least significant bit) set to 0.
+    Return x with the lowest set bit set to 0.
     """
 
     return x & (x - 1)
 
-def extract_lsb(x):
+def get_lowest_set_bit(x):
     """
-    Return the LSB (least significant bit) of x.
+    Return the lowest set bit of x.
     """
 
     return x & ~(x - 1)
 
+def get_least_significant_bits(x, n):
+    """
+    Return the n least significant bits of x.
+    """
+
+    return x & ones(n)
+
+def get_bits(x, k, size, offset=0):
+    """
+    Return the k-th set of size bits starting from offset.
+    """
+
+    answer = x >> offset
+    answer >>= k * size
+    return get_least_significant_bits(answer, size)
+
 def swap_bits(x, i, j):
     """
-    Swap bits by toggling bits i and j of x if different.
+    Return x with bits swapped by toggling bits i and j of x if different.
     """
 
     if (get_bit(x, i) != get_bit(x, j)):
         x = toggle_bit(toggle_bit(x, i), j)
     return x
+
+def shift_bits(x, k):
+    """
+    Return x logically right shifted by k. k can be negative, which would
+    mean a logical left shift.
+    """
+    if (k >= 0):
+        return x << k
+    else:
+        return x >> -k
 
 def log2(x):
     """
@@ -120,7 +153,7 @@ def bit_array_select(L, bit_array, log2):
 
     S = set()
     while (bit_array):
-        i = log2(extract_lsb(bit_array))
-        bit_array = drop_lsb(bit_array)
+        i = log2(get_lowest_set_bit(bit_array))
+        bit_array = drop_lowest_set_bit(bit_array)
         S.add(L[i])
     return frozenset(S)
