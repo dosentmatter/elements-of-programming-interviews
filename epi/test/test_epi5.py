@@ -49,7 +49,7 @@ class P1_Parity_Test(unittest.TestCase):
 
         NUM_TESTS_RUN = 10
         MAX_BIT_SIZE = 256
-        MAX_CACHE_BIT_SIZE = 20
+        MAX_CACHE_BIT_SIZE = 18
         for _ in range(NUM_TESTS_RUN):
             self.cls.fill_cache(random.randint(1, MAX_CACHE_BIT_SIZE))
 
@@ -120,7 +120,7 @@ class P3_Reverse_Test(unittest.TestCase):
 
         NUM_TESTS_RUN = 10
         MAX_BIT_SIZE = 256
-        MAX_CACHE_BIT_SIZE = 20
+        MAX_CACHE_BIT_SIZE = 18
         for _ in range(NUM_TESTS_RUN):
             self.cls.fill_cache(random.randint(1, MAX_CACHE_BIT_SIZE))
 
