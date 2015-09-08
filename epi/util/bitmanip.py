@@ -21,7 +21,7 @@ def get_bit_position(x, k):
     Return the k-th bit of x, leaving it in its position.
     """
 
-    return x & (1 << n)
+    return x & (1 << k)
 
 def set_bit(x, k):
     """
