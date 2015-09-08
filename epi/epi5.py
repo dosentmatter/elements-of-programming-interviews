@@ -129,7 +129,7 @@ class P3_Reverse:
         for offset in range(0, number_bits // 2):
             i = start + offset
             i_opposite = (end - 1) - offset
-            x = bitmanip.swap_bits(x, i, i_opposite)
+            x = bitmanip.swap_bits_index(x, i, i_opposite)
         return x
 
     @classmethod
@@ -231,7 +231,7 @@ class P3_Reverse:
 
 class P4_ClosestSameBits:
     """
-    x is a 64-bit number with k bits set high, k != 0, 64.
+    x is a 64-bit (or more) number with k bits set high, k != 0, 64 (or more).
 	Find a number y that also has k bits set high and is
 	closest to x (either greater or less than x).
     """
@@ -246,14 +246,21 @@ class P4_ClosestSameBits:
         intuitively, because it changes the least significant bits possible.
         """
 
-        for i in range(63):
+        for i in range(x.bit_length()):
             if (bitmanip.get_bit(x, i) != bitmanip.get_bit(x, i + 1)):
-                x = bitmanip.swap_bits(x, i, i + 1)
+                x = bitmanip.swap_bits_index(x, i, i + 1)
                 return x
 
-    #@staticmethod
-    #def first_consecutive_diff_bitmanip(x):
-    #    pass
+    @staticmethod
+    def first_consecutive_diff_bitmanip(x):
+        """
+        Return y by swapping the first two consecutive bits that differ.
+        This works using bit manipulation.
+        """
+
+        bit_array = bitmanip.get_first(x, bitmanip.get_consecutive_01)
+
+        return bitmanip.swap_bits_bit_array(x, bit_array)
 
 class P5_Powerset:
     """

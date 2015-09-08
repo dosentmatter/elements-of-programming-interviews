@@ -142,6 +142,12 @@ class P4_ClosestSameBits_Test(unittest.TestCase):
         self.assertEqual(first_consecutive_diff_iterate(5), 6)
         self.assertEqual(first_consecutive_diff_iterate(9), 10)
         self.assertEqual(first_consecutive_diff_iterate(12), 10)
+
+    def test_first_consecutive_diff_bitmanip(self):
+        first_consecutive_diff_bitmanip = self.cls.first_consecutive_diff_bitmanip
+        self.assertEqual(first_consecutive_diff_bitmanip(5), 6)
+        self.assertEqual(first_consecutive_diff_bitmanip(9), 10)
+        self.assertEqual(first_consecutive_diff_bitmanip(12), 10)
         
 class P5_Powerset_Test(unittest.TestCase):
 
