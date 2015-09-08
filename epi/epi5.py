@@ -258,7 +258,7 @@ class P4_ClosestSameBits:
         This works using bit manipulation.
         """
 
-        bit_array = bitmanip.get_first(x, bitmanip.get_consecutive_01)
+        bit_array = bitmanip.get_first(x, bitmanip.get_consecutive_diff)
 
         return bitmanip.swap_bits_bit_array(x, bit_array)
 
