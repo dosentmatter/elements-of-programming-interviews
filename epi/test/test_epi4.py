@@ -1,7 +1,7 @@
 import unittest
 from epi.epi4 import *
 import random
-from epi.test.util import randomextra
+from epi.util import randomextra
 
 class Max_Diff_Test(unittest.TestCase):
 

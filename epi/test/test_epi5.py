@@ -1,6 +1,6 @@
 import unittest
 from epi.epi5 import *
-from epi.util import bitmanip
+from epi.util import bitmanip, mathextra
 import random
 
 class P1_Parity_Test(unittest.TestCase):
@@ -156,28 +156,27 @@ class P5_Powerset_Test(unittest.TestCase):
         
         f = frozenset
         
-        self.input = []
-        self.output = []
+        self.sets = []
+        self.powersets = []
         
-        self.input.append({})
-        self.output.append({ f({}) })
+        self.sets.append({})
+        self.powersets.append({ f({}) })
         
-        self.input.append({0})
-        self.output.append({ f({}), f({0}) })
+        self.sets.append({0})
+        self.powersets.append({ f({}), f({0}) })
         
-        self.input.append({0, 1})
-        self.output.append({ f({}), f({0}), f({1}), f({0, 1}) })
+        self.sets.append({0, 1})
+        self.powersets.append({ f({}), f({0}), f({1}), f({0, 1}) })
         
-        self.input.append({0, 1, 2})
-        self.output.append({ f({}), f({0}), f({1}), f({0, 1}),
+        self.sets.append({0, 1, 2})
+        self.powersets.append({ f({}), f({0}), f({1}), f({0, 1}),
                          f({2}), f({0, 2}), f({1, 2}), f({0, 1, 2}) })
 
     def test_bit_array_map(self):
         bit_array_map = self.cls.bit_array_map
-        self.assertEqual(bit_array_map(self.input[0]), self.output[0])
-        self.assertEqual(bit_array_map(self.input[1]), self.output[1])
-        self.assertEqual(bit_array_map(self.input[2]), self.output[2])
-        self.assertEqual(bit_array_map(self.input[3]), self.output[3])
+
+        for i in range(len(self.sets)):
+            self.assertEqual(bit_array_map(self.sets[i]), self.powersets[i])
 
     def test_bit_array_map_rand(self):
         bit_array_map = self.cls.bit_array_map
@@ -185,17 +184,16 @@ class P5_Powerset_Test(unittest.TestCase):
         NUM_TESTS_RUN = 10
         MAX_SET_SIZE = 15
         for _ in range(NUM_TESTS_RUN):
-            random_length = random.randint(0, MAX_SET_SIZE)
-            S = set(range(random_length))
+            random_set_length = random.randint(0, MAX_SET_SIZE)
+            S = set(range(random_set_length))
             powerset_length = len(bit_array_map(S))
-            self.assertEqual(powerset_length, 2 ** random_length)
+            self.assertEqual(powerset_length, 2 ** random_set_length)
 
     def test_recursive_default(self):
         recursive_default = self.cls.recursive_default
-        self.assertEqual(recursive_default(self.input[0]), self.output[0])
-        self.assertEqual(recursive_default(self.input[1]), self.output[1])
-        self.assertEqual(recursive_default(self.input[2]), self.output[2])
-        self.assertEqual(recursive_default(self.input[3]), self.output[3])
+
+        for i in range(len(self.sets)):
+            self.assertEqual(recursive_default(self.sets[i]), self.powersets[i])
 
     def test_recursive_default_rand(self):
         recursive_default = self.cls.recursive_default
@@ -203,17 +201,16 @@ class P5_Powerset_Test(unittest.TestCase):
         NUM_TESTS_RUN = 10
         MAX_SET_SIZE = 15
         for _ in range(NUM_TESTS_RUN):
-            random_length = random.randint(0, MAX_SET_SIZE)
-            S = set(range(random_length))
+            random_set_length = random.randint(0, MAX_SET_SIZE)
+            S = set(range(random_set_length))
             powerset_length = len(recursive_default(S))
-            self.assertEqual(powerset_length, 2 ** random_length)
+            self.assertEqual(powerset_length, 2 ** random_set_length)
 
     def test_recursive_choice(self):
         recursive_choice = self.cls.recursive_choice
-        self.assertEqual(recursive_choice(self.input[0]), self.output[0])
-        self.assertEqual(recursive_choice(self.input[1]), self.output[1])
-        self.assertEqual(recursive_choice(self.input[2]), self.output[2])
-        self.assertEqual(recursive_choice(self.input[3]), self.output[3])
+
+        for i in range(len(self.sets)):
+            self.assertEqual(recursive_choice(self.sets[i]), self.powersets[i])
 
     def test_recursive_choice_rand(self):
         recursive_choice = self.cls.recursive_choice
@@ -221,10 +218,109 @@ class P5_Powerset_Test(unittest.TestCase):
         NUM_TESTS_RUN = 10
         MAX_SET_SIZE = 15
         for _ in range(NUM_TESTS_RUN):
-            random_length = random.randint(0, MAX_SET_SIZE)
-            S = set(range(random_length))
+            random_set_length = random.randint(0, MAX_SET_SIZE)
+            S = set(range(random_set_length))
             powerset_length = len(recursive_choice(S))
-            self.assertEqual(powerset_length, 2 ** random_length)
+            self.assertEqual(powerset_length, 2 ** random_set_length)
+
+class P5_1_Subsets_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P5_1_Subsets
+        
+        f = frozenset
+        
+        self.sets = []
+        self.subsets_list = []
+        
+        self.sets.append({})
+        self.subsets_list.append({ f({}) })
+        
+        self.sets.append({0})
+        self.subsets_list.append({ f({}), f({0}) })
+        
+        self.sets.append({0, 1})
+        self.subsets_list.append({ f({}), f({0}), f({1}), f({0, 1}) })
+        
+        self.sets.append({0, 1, 2})
+        self.subsets_list.append({ f({}), f({0}), f({1}), f({0, 1}),
+                         f({2}), f({0, 2}), f({1, 2}), f({0, 1, 2}) })
+
+    def filter_set(self, S, k):
+        """
+        Return a set with items in S that are of length k.
+        """
+
+        return {s for s in S if len(s) == k}
+
+    def test_bit_array_map(self):
+        bit_array_map = self.cls.bit_array_map
+        filter_set = self.filter_set
+
+        for i in range(len(self.sets)):
+            for j in range(i + 1):
+                self.assertEqual(bit_array_map(self.sets[i], j),
+                                 filter_set(self.subsets_list[i], j))
+
+    def test_bit_array_map_rand(self):
+        bit_array_map = self.cls.bit_array_map
+
+        NUM_TESTS_RUN = 10
+        MAX_SET_SIZE = 15
+        for _ in range(NUM_TESTS_RUN):
+            random_set_length = random.randint(0, MAX_SET_SIZE)
+            S = set(range(random_set_length))
+            random_subset_length = random.randint(0, random_set_length)
+
+            number_subsets = len(bit_array_map(S, random_subset_length))
+            self.assertEqual(number_subsets, 
+                  mathextra.n_choose_r(random_set_length, random_subset_length))
+
+    def test_recursive_default(self):
+        recursive_default = self.cls.recursive_default
+        filter_set = self.filter_set
+
+        for i in range(len(self.sets)):
+            for j in range(i + 1):
+                self.assertEqual(recursive_default(self.sets[i], j),
+                                 filter_set(self.subsets_list[i], j))
+
+    def test_recursive_default_rand(self):
+        recursive_default = self.cls.recursive_default
+
+        NUM_TESTS_RUN = 10
+        MAX_SET_SIZE = 15
+        for _ in range(NUM_TESTS_RUN):
+            random_set_length = random.randint(0, MAX_SET_SIZE)
+            S = set(range(random_set_length))
+            random_subset_length = random.randint(0, random_set_length)
+
+            number_subsets = len(recursive_default(S, random_subset_length))
+            self.assertEqual(number_subsets, 
+                  mathextra.n_choose_r(random_set_length, random_subset_length))
+
+    def test_recursive_choice(self):
+        recursive_choice = self.cls.recursive_choice
+        filter_set = self.filter_set
+
+        for i in range(len(self.sets)):
+            for j in range(i + 1):
+                self.assertEqual(recursive_choice(self.sets[i], j),
+                                 filter_set(self.subsets_list[i], j))
+
+    def test_recursive_choice_rand(self):
+        recursive_choice = self.cls.recursive_choice
+
+        NUM_TESTS_RUN = 10
+        MAX_SET_SIZE = 15
+        for _ in range(NUM_TESTS_RUN):
+            random_set_length = random.randint(0, MAX_SET_SIZE)
+            S = set(range(random_set_length))
+            random_subset_length = random.randint(0, random_set_length)
+
+            number_subsets = len(recursive_choice(S, random_subset_length))
+            self.assertEqual(number_subsets, 
+                  mathextra.n_choose_r(random_set_length, random_subset_length))
 
 def main():
     unittest.main()
