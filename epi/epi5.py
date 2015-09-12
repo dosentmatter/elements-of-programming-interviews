@@ -448,14 +448,15 @@ class P5_1_Subsets:
 
         L = list(S)
         subsets = set()
+
         def helper_add(start_i=0, subset=set()):
             """
             Populate subsets with the subsets of the elements L[start_i:] of
             size k. Start with an empty subset and keep adding.
 
             Each element defaults to not in the current subset. This is why
-            subsets are added at each call to helper_add() - elements not added
-            are defaulted.
+            subsets are added at each call to helper_add() if the
+            size == k - elements not added are defaulted.
 
             :param start_i: the index of L to start generating the subets.
             :param subset: The current subset of S.
@@ -478,8 +479,8 @@ class P5_1_Subsets:
             size k. Start with an empty subset and keep removing.
 
             Each element defaults to in the current subset. This is why
-            subsets are removed at each call to helper_remove() - elements
-            not removed are defaulted.
+            subsets are added at each call to helper_remove() if the
+            size == k- elements not removed are defaulted.
 
             :param start_i: the index of L to start generating the subets.
             :param subset: The current subset of S.
@@ -507,6 +508,27 @@ class P5_1_Subsets:
     def recursive_choice(S, k, output=False):
         """
         Return the subsets of S of size k. Print the subsets if output == True.
+
+        Since this uses recursion, if k != 0, len(S), there is a buildup before
+        the subsets length start to == k. This is why there are two helpers,
+        one that starts with 0 length subsets and adds first (helper_add()),
+        and one that starts with len(S) length subsets and removes first
+        (helper_remove()).
+
+        number_possible_k_values == len(S) + 1 because for S of length n,
+        there are (0, 1, 2, 3, ..., n) == n + 1 possible values for k.
+
+        This divides the use of the helpers by
+        (number_possible_k_values + 1) // 2 because it favors helper_add()
+        for odd length number_possible_k_values. This is done because
+        helper_add() is a little faster because it starts with an empty
+        subset so it doesn't have to copy S to start.
+
+        Example:
+        For S == {0, 1, 2, 3}, len(S) = 4
+        number_possible_k_values == 5 because k can be from [0:4]
+        use helper_add() for k == 0, 1, 2
+        use helper_remove() for k == 3, 4
         """
 
         if not isinstance(S, set):
@@ -514,7 +536,8 @@ class P5_1_Subsets:
 
         L = list(S)
         subsets = set()
-        def helper(start_i=0, subset=set()):
+
+        def helper_add(start_i=0, subset=set()):
             """
             Populate subsets with the subsets of the elements L[start_i:] of
             size k.
@@ -522,7 +545,9 @@ class P5_1_Subsets:
             At each call of helper(), two choices are made to include and not
             include the current element of the set into the subset. This
             is why subset is only added to subset at the end of the
-            call stack, when a choice is made for all elements.
+            call stack when the size == k, since a choice is made for
+            all elements. The  ones that haven't been added explicitly default
+            to not in the set.
 
             This is a pruned version of the P5_Powerset version. The if case
             limits len(subset) to be <= k for this function. In the elif case,
@@ -540,8 +565,45 @@ class P5_1_Subsets:
                     print(subset)
             elif (start_i < len(L)):
                 subset.add(L[start_i])
-                helper(start_i + 1, subset)
+                helper_add(start_i + 1, subset)
                 subset.remove(L[start_i])
-                helper(start_i + 1, subset)
-        helper()
+                helper_add(start_i + 1, subset)
+
+        def helper_remove(start_i=0, subset=set(S)):
+            """
+            Populate subsets with the subsets of the elements L[start_i:] of
+            size k.
+
+            At each call of helper(), two choices are made to not include and
+            include the current element of the set into the subset. This
+            is why subset is only added to subset at the end of the
+            call stack when the size == k, since a choice is made for all
+            elements. The ones that haven't been removed explicitly default
+            to in the set.
+
+            This is a pruned version of the P5_Powerset version. The if case
+            limits len(subset) to be >= k for this function. In the elif case,
+            this function only makes more calls if there are more items. This
+            is needed because the if case allows subsets of length > k to
+            sneak by.
+
+            :param start_i: the index of L to start generating the subsets.
+            :param subset: The current subset of S.
+            """
+
+            if (len(subset) == k):
+                subsets.add(frozenset(subset))
+                if (output):
+                    print(subset)
+            elif (start_i < len(L)):
+                subset.remove(L[start_i])
+                helper_remove(start_i + 1, subset)
+                subset.add(L[start_i])
+                helper_remove(start_i + 1, subset)
+
+        number_possible_k_values = len(S) + 1
+        if (k < (number_possible_k_values + 1) // 2):
+            helper_add()
+        else:
+            helper_remove()
         return subsets
