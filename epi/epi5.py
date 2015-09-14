@@ -170,7 +170,7 @@ class P3_Reverse:
         _cache_filled = False
 
     @classmethod
-    def precompute(cls, x, start=0, end=None):
+def precompute(cls, x, start=0, end=None):
         """
         Return x with bits from start (inclusive) to end (exclusive) reversed
         by using the precomputed reverses.
@@ -185,6 +185,8 @@ class P3_Reverse:
 
         It also finishes up if number_bits isn't divisible by
         cls._cache_bit_size.
+
+        The mask at the end makes the answer keep the non-rotated part.
         """
 
         if (not cls._cache_filled):
