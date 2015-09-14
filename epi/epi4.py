@@ -53,6 +53,8 @@ class Max_Diff:
         mini = float("inf")
         max_diff = -float("inf")
         for i in range(len(L)):
-            max_diff = max(max_diff, L[i] - mini) # find max_diff using PREVIOUS minimum
-            mini = min(mini, L[i]) # after finding current max_diff, can update the previous minimum
+            # find max_diff using PREVIOUS minimum
+            max_diff = max(max_diff, L[i] - mini) 
+            # after finding current max_diff, can update the previous minimum
+            mini = min(mini, L[i])
         return max_diff
