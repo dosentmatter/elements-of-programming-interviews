@@ -175,8 +175,8 @@ def precompute(cls, x, start=0, end=None):
         Return x with bits from start (inclusive) to end (exclusive) reversed
         by using the precomputed reverses.
 
-        This grabs each set of bits of cls._cache_bit_size and maps them
-        to the reverses.
+        This grabs each set of bits of cls._cache_bit_size, maps them
+        to the reverses., and shifts them to their correct position.
         In effect, it does this:
         return cls._cache[(x >> 48) & 0xFFFF] \
               | cls._cache[(x >> 32) & 0xFFFF] << 16 \
