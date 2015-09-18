@@ -250,7 +250,7 @@ class P4_ClosestSameBits:
 
         for i in range(x.bit_length()):
             if (bitmanip.get_bit(x, i) != bitmanip.get_bit(x, i + 1)):
-                x = bitmanip.swap_bits_index(x, i, i + 1)
+                x = bitmanip.swap_bits_index(x, i)
                 return x
 
     @staticmethod
