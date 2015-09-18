@@ -398,6 +398,8 @@ class P5_1_Subsets:
 
         The code uses a while loop to check when its done but you can also use
         combinations (nCr) because you can calculate the number of subsets.
+
+        This is the slowest.
         """
 
         if (k == 0):
@@ -443,12 +445,15 @@ class P5_1_Subsets:
         number_possible_k_values == 5 because k can be from [0:4]
         use helper_add() for k == 0, 1, 2
         use helper_remove() for k == 3, 4
+
+        This is the fastest because it doesn't waste time 
         """
 
         if not isinstance(S, set):
             S = set(S)
 
         L = list(S)
+        L_length = len(L)
         subsets = set()
 
         def helper_add(start_i=0, subset=set()):
@@ -460,20 +465,30 @@ class P5_1_Subsets:
             subsets are added at each call to helper_add() if the
             size == k - elements not added are defaulted.
 
+            This is a pruned version of the P5_Powerset version. The first if
+            case limits subset_length to be <= k for this function. In the
+            second if case, it only considers adding if there are enough
+            elements to remove to reach a subset of size k.
+
             :param start_i: the index of L to start generating the subets.
             :param subset: The current subset of S.
             """
 
-            if (len(subset) == k):
+            subset_length = len(subset)
+
+            if (subset_length == k):
                 subsets.add(frozenset(subset))
                 if (output):
                     print(subset)
                 return
 
-            for i in range(start_i, len(L)):
-                subset.add(L[i])
-                helper_add(i + 1, subset)
-                subset.remove(L[i])
+            elements_required_to_add = k - subset_length
+            elements_remaining_to_add = L_length - start_i
+            if (elements_required_to_add <= elements_remaining_to_add):
+                for i in range(start_i, L_length):
+                    subset.add(L[i])
+                    helper_add(i + 1, subset)
+                    subset.remove(L[i])
 
         def helper_remove(start_i=0, subset=set(S)):
             """
@@ -484,20 +499,30 @@ class P5_1_Subsets:
             subsets are added at each call to helper_remove() if the
             size == k- elements not removed are defaulted.
 
+            This is a pruned version of the P5_Powerset version. The first if
+            case limits subset_length to be >= k for this function. In the
+            second if case, it considers removing if there are enough
+            elements to remove to reach a subset of size k.
+
             :param start_i: the index of L to start generating the subets.
             :param subset: The current subset of S.
             """
 
-            if (len(subset) == k):
+            subset_length = len(subset)
+
+            if (subset_length == k):
                 subsets.add(frozenset(subset))
                 if (output):
                     print(subset)
                 return
 
-            for i in range(start_i, len(L)):
-                subset.remove(L[i])
-                helper_remove(i + 1, subset)
-                subset.add(L[i])
+            elements_required_to_remove = subset_length - k
+            elements_remaining_to_remove = L_length - start_i
+            if (elements_required_to_remove <= elements_remaining_to_remove):
+                for i in range(start_i, len(L)):
+                    subset.remove(L[i])
+                    helper_remove(i + 1, subset)
+                    subset.add(L[i])
 
         number_possible_k_values = len(S) + 1
         if (k < (number_possible_k_values + 1) // 2):
@@ -537,6 +562,7 @@ class P5_1_Subsets:
             S = set(S)
 
         L = list(S)
+        L_length = len(L)
         subsets = set()
 
         def helper_add(start_i=0, subset=set()):
@@ -548,24 +574,29 @@ class P5_1_Subsets:
             include the current element of the set into the subset. This
             is why subset is only added to subset at the end of the
             call stack when the size == k, since a choice is made for
-            all elements. The  ones that haven't been added explicitly default
+            all elements. The ones that haven't been added explicitly default
             to not in the set.
 
-            This is a pruned version of the P5_Powerset version. The if case
-            limits len(subset) to be <= k for this function. In the elif case,
-            this function only makes more calls if there are more items. This
-            is needed because the if case allows subsets of length < k to
-            sneak by.
+            This is a pruned version of the P5_Powerset version. The first if
+            case limits len(subset) to be <= k for this function. In the second
+            if case, it only makes more calls if there are enough elements
+            to possibly reach a subset of size k by removing from subset.
 
             :param start_i: the index of L to start generating the subsets.
             :param subset: The current subset of S.
             """
 
-            if (len(subset) == k):
+            subset_length = len(subset)
+
+            if (subset_length == k):
                 subsets.add(frozenset(subset))
                 if (output):
                     print(subset)
-            elif (start_i < len(L)):
+                return
+
+            elements_required_to_add = k - subset_length
+            elements_remaining_to_add = L_length - start_i
+            if (elements_required_to_add <= elements_remaining_to_add):
                 subset.add(L[start_i])
                 helper_add(start_i + 1, subset)
                 subset.remove(L[start_i])
@@ -583,21 +614,26 @@ class P5_1_Subsets:
             elements. The ones that haven't been removed explicitly default
             to in the set.
 
-            This is a pruned version of the P5_Powerset version. The if case
-            limits len(subset) to be >= k for this function. In the elif case,
-            this function only makes more calls if there are more items. This
-            is needed because the if case allows subsets of length > k to
-            sneak by.
+            This is a pruned version of the P5_Powerset version. The first if
+            case limits len(subset) to be >= k for this function. In the second
+            if case, it only makes more calls if there are enough elements
+            to possibly reach a subset of size k by removeing from subset.
 
             :param start_i: the index of L to start generating the subsets.
             :param subset: The current subset of S.
             """
 
+            subset_length = len(subset)
+
             if (len(subset) == k):
                 subsets.add(frozenset(subset))
                 if (output):
                     print(subset)
-            elif (start_i < len(L)):
+                return
+
+            elements_required_to_remove = subset_length - k
+            elements_remaining_to_remove = L_length - start_i
+            if (elements_required_to_remove <= elements_remaining_to_remove):
                 subset.remove(L[start_i])
                 helper_remove(start_i + 1, subset)
                 subset.add(L[start_i])
