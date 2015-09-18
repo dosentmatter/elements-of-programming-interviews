@@ -170,7 +170,7 @@ class P3_Reverse:
         _cache_filled = False
 
     @classmethod
-def precompute(cls, x, start=0, end=None):
+    def precompute(cls, x, start=0, end=None):
         """
         Return x with bits from start (inclusive) to end (exclusive) reversed
         by using the precomputed reverses.
