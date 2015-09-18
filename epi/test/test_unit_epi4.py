@@ -19,7 +19,8 @@ class Max_Diff_Test(unittest.TestCase):
         for _ in range(NUM_TESTS_RUN):
             random_list_length = random.randint(0, MAX_LIST_LENGTH)
             random_list = \
-                randomextra.randlist(MAX_LIST_NUMBER, random_list_length)
+                randomextra.randlist_duplicates(MAX_LIST_NUMBER,
+                                                random_list_length)
 
             a = brute_force(random_list)
             b = divide_and_conquer(random_list)
