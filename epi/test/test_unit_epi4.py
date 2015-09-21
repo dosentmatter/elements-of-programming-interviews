@@ -28,3 +28,9 @@ class Max_Diff_Test(unittest.TestCase):
 
             self.assertEqual(a, b)
             self.assertEqual(b, c)
+
+def main():
+    unittest.main()
+
+if __name__ == '__main__':
+    main()

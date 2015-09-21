@@ -160,3 +160,9 @@ class log2_Test(unittest.TestCase):
         self.assertEqual(log2_cached(1 << 4), 4)
         self.assertEqual(log2_cached(1 << 21), 21)
         self.assertEqual(log2_cached(1 << 99), 99)
+
+def main():
+    unittest.main()
+
+if __name__ == '__main__':
+    main()

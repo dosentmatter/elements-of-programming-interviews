@@ -65,3 +65,9 @@ class P5_1_Subsets_Test(unittest.TestCase):
 
     def tearDown(self):
         print()
+
+def main():
+    unittest.main()
+
+if __name__ == '__main__':
+    main()
