@@ -322,6 +322,46 @@ class P5_1_Subsets_Test(unittest.TestCase):
             self.assertEqual(number_subsets, 
                   mathextra.n_choose_r(random_set_length, random_subset_length))
 
+class P6_StringIntegerConversion_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P6_StringIntegerConversion
+
+    def test_int_to_string_concatenate(self):
+        int_to_string_concatenate = self.cls.int_to_string_concatenate
+        self.assertEqual(int_to_string_concatenate(0), "0")
+        self.assertEqual(int_to_string_concatenate(79312), "79312")
+        self.assertEqual(int_to_string_concatenate(-813289), "-813289")
+        self.assertEqual(int_to_string_concatenate(9382901), "9382901")
+
+    def test_int_to_string_list(self):
+        int_to_string_list = self.cls.int_to_string_list
+        self.assertEqual(int_to_string_list(0), "0")
+        self.assertEqual(int_to_string_list(79312), "79312")
+        self.assertEqual(int_to_string_list(-813289), "-813289")
+        self.assertEqual(int_to_string_list(9382901), "9382901")
+
+    def test_int_to_string_generator(self):
+        int_to_string_generator = self.cls.int_to_string_generator
+        self.assertEqual(int_to_string_generator(0), "0")
+        self.assertEqual(int_to_string_generator(79312), "79312")
+        self.assertEqual(int_to_string_generator(-813289), "-813289")
+        self.assertEqual(int_to_string_generator(9382901), "9382901")
+
+    def test_int_to_string_deque(self):
+        int_to_string_deque = self.cls.int_to_string_deque
+        self.assertEqual(int_to_string_deque(0), "0")
+        self.assertEqual(int_to_string_deque(79312), "79312")
+        self.assertEqual(int_to_string_deque(-813289), "-813289")
+        self.assertEqual(int_to_string_deque(9382901), "9382901")
+
+    def test_string_to_int(self):
+        string_to_int = self.cls.string_to_int
+        self.assertEqual(0, string_to_int("0"))
+        self.assertEqual(79312, string_to_int("79312"))
+        self.assertEqual(-813289, string_to_int("-813289"))
+        self.assertEqual(9382901, string_to_int("9382901"))
+
 def main():
     unittest.main()
 

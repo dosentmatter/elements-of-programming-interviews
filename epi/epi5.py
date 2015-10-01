@@ -1,5 +1,5 @@
-from epi.util import bitmanip, mathextra
-import itertools
+from epi.util import bitmanip, mathextra, stringextra
+from collections import deque
 
 class P1_Parity:
     """
@@ -645,3 +645,136 @@ class P5_1_Subsets:
         else:
             helper_remove()
         return subsets
+
+class P6_StringIntegerConversion:
+    """
+    Implement string/integer inter-conversion functions.
+
+    The int_to_string methods run at about the same speed.
+    """
+
+    _BASE = 10
+
+    @classmethod
+    def int_to_string_concatenate(cls, x):
+        """
+        Returns the string version of the integer x. Uses string
+        concatenation.
+
+        Inserting when doing concatenation ie.
+        answer = char + answer (so no need to reverse at end)
+        turns out to be slower.
+        """
+
+        if (not x):
+            return "0"
+
+        is_negative = False
+        if (x < 0):
+            x = -x
+            is_negative = True
+
+        answer = ""
+        while (x):
+            answer += stringextra.int_to_digit(x % cls._BASE)
+            x //= cls._BASE
+
+        if (is_negative):
+            answer += '-'
+
+        return answer[::-1]
+
+    @classmethod
+    def int_to_string_list(cls, x):
+        """
+        Returns the string version of the integer x. Uses list
+        joining.
+        """
+
+        if (not x):
+            return "0"
+
+        is_negative = False
+        if (x < 0):
+            x = -x
+            is_negative = True
+
+        answer = []
+        while (x):
+            answer.append(stringextra.int_to_digit(x % cls._BASE))
+            x //= cls._BASE
+
+        if (is_negative):
+            answer.append('-')
+
+        return ''.join(reversed(answer))
+
+    @classmethod
+    def int_to_string_generator(cls, x):
+        """
+        Returns the string version of the integer x. Uses generator
+        joining.
+        """
+
+        if (not x):
+            return "0"
+
+        is_negative = False
+        if (x < 0):
+            x = -x
+            is_negative = True
+
+        def helper_generator(y):
+            """
+            Yields each digit and sign of y as a string (character).
+            """
+
+            while(y):
+                yield stringextra.int_to_digit(y % cls._BASE)
+                y //= cls._BASE
+            if (is_negative):
+                yield '-'
+
+        return ''.join(helper_generator(x))[::-1]
+
+    @classmethod
+    def int_to_string_deque(cls, x):
+        """
+        Returns the string version of the integer x. Uses deque
+        joining.
+        """
+
+        if (not x):
+            return "0"
+
+        is_negative = False
+        if (x < 0):
+            x = -x
+            is_negative = True
+
+        answer = deque()
+        while (x):
+            answer.appendleft(stringextra.int_to_digit(x % cls._BASE))
+            x //= cls._BASE
+
+        if (is_negative):
+            answer.appendleft('-')
+
+        return ''.join(answer)
+
+    @classmethod
+    def string_to_int(cls, s):
+        is_negative = False
+        if (s[0] == '-'):
+            s = iter(s)
+            # skip first element
+            next(s)
+            is_negative = True
+
+        answer = 0
+        for c in s:
+            answer = answer * cls._BASE + stringextra.digit_to_int(c)
+
+        if (is_negative):
+            answer = -answer
+        return answer
