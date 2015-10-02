@@ -658,6 +658,8 @@ class P6_StringIntegerConversion:
         """
         Returns the string version of the integer x. Uses string
         concatenation. The string is represented in base base.
+        Alphabetical digits are lowercase. Accepts bases in the range
+        [2, 16].
 
         Inserting when doing concatenation ie.
         answer = char + answer (so no need to reverse at end)
@@ -687,6 +689,8 @@ class P6_StringIntegerConversion:
         """
         Returns the string version of the integer x. Uses list
         joining. The string is represented in base base.
+        Alphabetical digits are lowercase. Accepts bases in the range
+        [2, 16].
         """
 
         if (not x):
@@ -712,6 +716,8 @@ class P6_StringIntegerConversion:
         """
         Returns the string version of the integer x. Uses generator
         joining. The string is represented in base base.
+        Alphabetical digits are lowercase. Accepts bases in the range
+        [2, 16].
         """
 
         if (not x):
@@ -740,6 +746,8 @@ class P6_StringIntegerConversion:
         """
         Returns the string version of the integer x. Uses deque
         joining. The string is represented in base base.
+        Alphabetical digits are lowercase. Accepts bases in the range
+        [2, 16].
         """
 
         if (not x):
@@ -763,8 +771,10 @@ class P6_StringIntegerConversion:
     @staticmethod
     def string_to_int(s, base=10):
         """
-        Returns the integer version of the string x. s is
-        represented in base base.
+        Returns the integer version of the string x. base is the base
+        s is represented in.
+        Alphabetical digits are lowercase or uppercase. Accepts bases
+        in the range [2, 16].
         """
 
         is_negative = False
@@ -781,3 +791,28 @@ class P6_StringIntegerConversion:
         if (is_negative):
             answer = -answer
         return answer
+
+class P7_BaseConversion:
+
+    @staticmethod
+    def convert_base(s, base1, base2):
+        """
+        s is a base1 string that represents a number. Return a string
+        that is the representation of s in base2.
+        Alphabetical digits are lowercase. Accepts bases in the range
+        [2, 16].
+        """
+        answer = stringextra.string_to_int(s, base1)
+        answer = stringextra.int_to_string(answer, base2)
+        return answer
+
+class P8_SpreadsheetColumnEncoding:
+
+    @staticmethod
+    def column_id_decode(s):
+        """
+        """
+
+        answer = 0
+        for c in s:
+            answer = a

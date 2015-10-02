@@ -362,6 +362,23 @@ class P6_StringIntegerConversion_Test(unittest.TestCase):
         self.assertEqual(-813289, string_to_int("-813289"))
         self.assertEqual(9382901, string_to_int("9382901"))
 
+class P7_BaseConversion_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P7_BaseConversion
+
+    def test_int_to_string_concatenate(self):
+        convert_base = self.cls.convert_base
+
+        self.assertEqual(convert_base("0", 10, 16), "0")
+        self.assertEqual(convert_base("79312", 10, 16), "135d0")
+        self.assertEqual(convert_base("-813289", 10, 16), "-c68e9")
+        self.assertEqual(convert_base("9382901", 10, 16), "8f2bf5")
+
+        self.assertEqual(convert_base("90812", 10, 8), "261274")
+        self.assertEqual(convert_base("983", 10, 2), "1111010111")
+        self.assertEqual(convert_base("324", 5, 10), "89")
+
 def main():
     unittest.main()
 
