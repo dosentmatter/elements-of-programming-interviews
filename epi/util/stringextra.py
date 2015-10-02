@@ -2,7 +2,7 @@ from collections import deque
 
 def int_to_digit(x):
     """
-    Returns the digit version of the integer, x. The digit is represented
+    Returns the digit version of the integer x. The digit is represented
     as a length-1 string (a character).
     Supports up to base16 (hexadecimal) digits. Alphabetical digits
     are lowercase.
@@ -19,7 +19,7 @@ def int_to_digit(x):
 
 def digit_to_int(c):
     """
-    Returns the integer version of the digit, c. c is represented as a length-1
+    Returns the integer version of the digit c. c is represented as a length-1
     string (a character).
     Supports up to base16 (hexadecimal) digits. Accepts uppercase and lowercase
     alphabetical digits.
@@ -37,7 +37,7 @@ def digit_to_int(c):
 
 def int_to_string(x, base=10):
     """
-    Returns the string version of the integer, x. Uses deque
+    Returns the string version of the integer x. Uses deque
     joining. The string is represented in base base.
     Alphabetical digits are lowercase. Accepts bases in the range
     [2, 16].
@@ -66,7 +66,7 @@ def int_to_string(x, base=10):
 
 def string_to_int(s, base=10):
     """
-    Returns the integer version of the string, x. base is the base
+    Returns the integer version of the string x. base is the base
     s is represented in.
     Alphabetical digits are lowercase or uppercase. Accepts bases
     in the range [2, 16].
@@ -95,7 +95,7 @@ def string_to_int(s, base=10):
 
 def column_id_digit_decode(c):
     """
-    Returns the integer version of the column id, c. c is represented
+    Returns the integer version of the column id c. c is represented
     as a length-1 string (a character).
     Supports up to 26 column ids [a-z]. Accepts uppercase and lowercase
     column ids.

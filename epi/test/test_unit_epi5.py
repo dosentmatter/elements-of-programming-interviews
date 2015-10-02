@@ -379,6 +379,19 @@ class P7_BaseConversion_Test(unittest.TestCase):
         self.assertEqual(convert_base("983", 10, 2), "1111010111")
         self.assertEqual(convert_base("324", 5, 10), "89")
 
+class P8_SpreadsheetColumnEncoding_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P8_SpreadsheetColumnEncoding
+
+    def test_column_id_decode(self):
+        column_id_decode = self.cls.column_id_decode
+
+        self.assertEqual(column_id_decode("a"), 1)
+        self.assertEqual(column_id_decode("aa"), 27)
+        self.assertEqual(column_id_decode("z"), 26)
+        self.assertEqual(column_id_decode("bc"), 55)
+
 def main():
     unittest.main()
 

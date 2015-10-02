@@ -793,6 +793,9 @@ class P6_StringIntegerConversion:
         return answer
 
 class P7_BaseConversion:
+    """
+    Convert a string s from base base1 to a string in base2.
+    """
 
     @staticmethod
     def convert_base(s, base1, base2):
@@ -807,12 +810,21 @@ class P7_BaseConversion:
         return answer
 
 class P8_SpreadsheetColumnEncoding:
+    """
+    Convert Excel column ids to the corresponding integer, with 'a'
+    corresponding to 1.
+    """
 
-    @staticmethod
-    def column_id_decode(s):
+    _ALPHABET_SIZE = 26
+
+    @classmethod
+    def column_id_decode(cls, s):
         """
+        Returns the decoded (integer) version of the column id s.
         """
 
         answer = 0
         for c in s:
-            answer = a
+            answer = answer * cls._ALPHABET_SIZE + \
+                     stringextra.column_id_digit_decode(c)
+        return answer
