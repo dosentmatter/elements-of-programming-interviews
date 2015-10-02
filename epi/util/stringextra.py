@@ -1,3 +1,5 @@
+from collections import deque
+
 def int_to_digit(x):
     """
     Returns the digit version of the integer x. The digit is represented
@@ -34,3 +36,48 @@ def digit_to_int(c):
         return (ord(c) - ord(offset_char)) + 10
     else:
         return None
+
+def int_to_string(x, base=10):
+    """
+    Returns the string version of the integer x. Uses deque
+    joining. The string is represented in base base.
+    """
+
+    if (not x):
+        return "0"
+
+    is_negative = False
+    if (x < 0):
+        x = -x
+        is_negative = True
+
+    answer = deque()
+    while (x):
+        answer.appendleft(int_to_digit(x % base))
+        x //= base
+
+    if (is_negative):
+        answer.appendleft('-')
+
+    return ''.join(answer)
+
+def string_to_int(s, base=10):
+    """
+    Returns the integer version of the string x. s is
+    represented in base base.
+    """
+
+    is_negative = False
+    if (s[0] == '-'):
+        s = iter(s)
+        # skip first element
+        next(s)
+        is_negative = True
+
+    answer = 0
+    for c in s:
+        answer = answer * base + digit_to_int(c)
+
+    if (is_negative):
+        answer = -answer
+    return answer

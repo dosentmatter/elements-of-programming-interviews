@@ -653,13 +653,11 @@ class P6_StringIntegerConversion:
     The int_to_string methods run at about the same speed.
     """
 
-    _BASE = 10
-
-    @classmethod
-    def int_to_string_concatenate(cls, x):
+    @staticmethod
+    def int_to_string_concatenate(x, base=10):
         """
         Returns the string version of the integer x. Uses string
-        concatenation.
+        concatenation. The string is represented in base base.
 
         Inserting when doing concatenation ie.
         answer = char + answer (so no need to reverse at end)
@@ -676,19 +674,19 @@ class P6_StringIntegerConversion:
 
         answer = ""
         while (x):
-            answer += stringextra.int_to_digit(x % cls._BASE)
-            x //= cls._BASE
+            answer += stringextra.int_to_digit(x % base)
+            x //= base
 
         if (is_negative):
             answer += '-'
 
         return answer[::-1]
 
-    @classmethod
-    def int_to_string_list(cls, x):
+    @staticmethod
+    def int_to_string_list(x, base=10):
         """
         Returns the string version of the integer x. Uses list
-        joining.
+        joining. The string is represented in base base.
         """
 
         if (not x):
@@ -701,19 +699,19 @@ class P6_StringIntegerConversion:
 
         answer = []
         while (x):
-            answer.append(stringextra.int_to_digit(x % cls._BASE))
-            x //= cls._BASE
+            answer.append(stringextra.int_to_digit(x % base))
+            x //= base
 
         if (is_negative):
             answer.append('-')
 
         return ''.join(reversed(answer))
 
-    @classmethod
-    def int_to_string_generator(cls, x):
+    @staticmethod
+    def int_to_string_generator(x, base=10):
         """
         Returns the string version of the integer x. Uses generator
-        joining.
+        joining. The string is represented in base base.
         """
 
         if (not x):
@@ -730,18 +728,18 @@ class P6_StringIntegerConversion:
             """
 
             while(y):
-                yield stringextra.int_to_digit(y % cls._BASE)
-                y //= cls._BASE
+                yield stringextra.int_to_digit(y % base)
+                y //= base
             if (is_negative):
                 yield '-'
 
         return ''.join(helper_generator(x))[::-1]
 
-    @classmethod
-    def int_to_string_deque(cls, x):
+    @staticmethod
+    def int_to_string_deque(x, base=10):
         """
         Returns the string version of the integer x. Uses deque
-        joining.
+        joining. The string is represented in base base.
         """
 
         if (not x):
@@ -754,16 +752,21 @@ class P6_StringIntegerConversion:
 
         answer = deque()
         while (x):
-            answer.appendleft(stringextra.int_to_digit(x % cls._BASE))
-            x //= cls._BASE
+            answer.appendleft(stringextra.int_to_digit(x % base))
+            x //= base
 
         if (is_negative):
             answer.appendleft('-')
 
         return ''.join(answer)
 
-    @classmethod
-    def string_to_int(cls, s):
+    @staticmethod
+    def string_to_int(s, base=10):
+        """
+        Returns the integer version of the string x. s is
+        represented in base base.
+        """
+
         is_negative = False
         if (s[0] == '-'):
             s = iter(s)
@@ -773,7 +776,7 @@ class P6_StringIntegerConversion:
 
         answer = 0
         for c in s:
-            answer = answer * cls._BASE + stringextra.digit_to_int(c)
+            answer = answer * base + stringextra.digit_to_int(c)
 
         if (is_negative):
             answer = -answer
