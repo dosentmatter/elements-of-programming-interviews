@@ -659,7 +659,7 @@ class P6_StringIntegerConversion:
         Returns the string version of the integer x. Uses string
         concatenation. The string is represented in base base.
         Alphabetical digits are lowercase. Accepts bases in the range
-        [2, 16].
+        [2, 36].
 
         Inserting when doing concatenation ie.
         answer = char + answer (so no need to reverse at end)
@@ -690,7 +690,7 @@ class P6_StringIntegerConversion:
         Returns the string version of the integer x. Uses list
         joining. The string is represented in base base.
         Alphabetical digits are lowercase. Accepts bases in the range
-        [2, 16].
+        [2, 36].
         """
 
         if (not x):
@@ -717,7 +717,7 @@ class P6_StringIntegerConversion:
         Returns the string version of the integer x. Uses generator
         joining. The string is represented in base base.
         Alphabetical digits are lowercase. Accepts bases in the range
-        [2, 16].
+        [2, 36].
         """
 
         if (not x):
@@ -747,7 +747,7 @@ class P6_StringIntegerConversion:
         Returns the string version of the integer x. Uses deque
         joining. The string is represented in base base.
         Alphabetical digits are lowercase. Accepts bases in the range
-        [2, 16].
+        [2, 36].
         """
 
         if (not x):
@@ -774,7 +774,7 @@ class P6_StringIntegerConversion:
         Returns the integer version of the string x. base is the base
         s is represented in.
         Alphabetical digits are lowercase or uppercase. Accepts bases
-        in the range [2, 16].
+        in the range [2, 36].
         """
 
         is_negative = False
@@ -803,7 +803,7 @@ class P7_BaseConversion:
         s is a base1 string that represents a number. Return a string
         that is the representation of s in base2.
         Alphabetical digits are lowercase. Accepts bases in the range
-        [2, 16].
+        [2, 36].
         """
         answer = stringextra.string_to_int(s, base1)
         answer = stringextra.int_to_string(answer, base2)
@@ -819,6 +819,27 @@ class P8_SpreadsheetColumnEncoding:
 
     @classmethod
     def column_id_decode(cls, s):
+        """
+        Returns the decoded (integer) version of the column id s.
+        """
+
+        answer = 0
+        for c in s:
+            answer = answer * cls._ALPHABET_SIZE + \
+                     stringextra.column_id_digit_decode(c)
+        return answer
+
+class P9_EliasGammaCoding:
+    """
+    L is a list of n integers. Write an encode function that returns
+    a string representing the concatenation of the Elias gamma codes
+    for L, and a decode function that takes a string s, generated
+    by the encode function, and returns the array that was passed to
+    the encode function.
+    """
+
+    @staticmethod
+    def elias_gamma_(cls, s):
         """
         Returns the decoded (integer) version of the column id s.
         """
