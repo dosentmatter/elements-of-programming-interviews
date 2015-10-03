@@ -404,6 +404,40 @@ class P8_SpreadsheetColumnEncoding_Test(unittest.TestCase):
         self.assertEqual(column_id_decode("zz"), 702)
         self.assertEqual(column_id_decode("aaa"), 703)
 
+class P9_EliasGammaCoding_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P9_EliasGammaCoding
+
+        self.LISTS = []
+        self.CODESTRINGS = []
+        
+        self.LISTS.append([])
+        self.CODESTRINGS.append("")
+        
+        self.LISTS.append([13])
+        self.CODESTRINGS.append("0001101")
+        
+        self.LISTS.append([13, 14])
+        self.CODESTRINGS.append("00011010001110")
+        
+        self.LISTS.append([1, 78, 30])
+        self.CODESTRINGS.append("10000001001110000011110")
+
+    def test_elias_gamma_list_encode(self):
+        elias_gamma_list_encode = self.cls.elias_gamma_list_encode
+
+        for i in range(len(self.LISTS)):
+            self.assertEqual(
+                    elias_gamma_list_encode(self.LISTS[i]), self.CODESTRINGS[i])
+
+    def test_elias_gamma_list_decode(self):
+        elias_gamma_list_decode = self.cls.elias_gamma_list_decode
+
+        for i in range(len(self.LISTS)):
+            self.assertEqual(
+                    elias_gamma_list_decode(self.CODESTRINGS[i]), self.LISTS[i])
+
 def main():
     unittest.main()
 

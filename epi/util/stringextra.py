@@ -1,4 +1,4 @@
-from collections import deque
+from collections import deque, namedtuple
 
 def int_to_digit(x):
     """
@@ -156,7 +156,7 @@ def column_id_digit_encode(x):
 
 def column_id_digit_decode(c):
     """
-    Returns the integer version of the column id c. c is represented
+    Returns the integer version of the column id c digit. c is represented
     as a length-1 string (a character).
     Supports up to 26 column ids [a-z]. Accepts uppercase and lowercase
     column ids.
@@ -176,17 +176,27 @@ def elias_gamma_encode(x):
     """
 
     binary_x = int_to_string(x, 2)
-    return binary_x.zfill(len(binary_x) - 1)
+    return binary_x.zfill((len(binary_x) - 1) + len(binary_x))
 
-def elias_gamma_decode(s):
+EliasGammaDecoding = namedtuple("EliasGammaDecoding", ["decoding", "next_s"])
+
+def elias_gamma_decode(s, return_next_s=False):
     """
-    Returns the Elias gamma decoding of the string s as an integer.
-    s
+    Returns the Elias gamma decoding of the string s as an integer decoding.
+    If return_next_s is true, return the string s with the first code
+    stripped off as well.
     """
 
     binary_number_start = s.index('1')
-    number_leading_zeros = binary_number_start_index
-    binary_number_end = binary_number_start + (number_leading_zeros + 1)
+    number_leading_zeros = binary_number_start
+    binary_number_length = number_leading_zeros + 1
+    binary_number_end = binary_number_start + binary_number_length
 
-    x = s[binary_number_start:binary_number_end]
-    return string_to_int(x, 2)
+    binary_decoding = s[binary_number_start:binary_number_end]
+    decoding = string_to_int(binary_decoding, 2)
+
+    if (return_next_s):
+        next_s = s[binary_number_end:]
+        return EliasGammaDecoding(decoding, next_s)
+    else:
+        return decoding

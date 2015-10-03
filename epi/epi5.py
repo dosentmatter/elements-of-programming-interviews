@@ -856,13 +856,24 @@ class P9_EliasGammaCoding:
     """
 
     @staticmethod
-    def elias_gamma_(cls, s):
+    def elias_gamma_list_encode(L):
         """
-        Returns the decoded (integer) version of the column id s.
+        Returns the encoded (string) version of the list L.
         """
 
-        answer = 0
-        for c in s:
-            answer = answer * cls._ALPHABET_SIZE + \
-                     stringextra.column_id_digit_decode(c)
+        answer = ""
+        for x in L:
+            answer += stringextra.elias_gamma_encode(x)
+        return answer
+
+    @staticmethod
+    def elias_gamma_list_decode(s):
+        """
+        Returns the decoded (list) version of the string s.
+        """
+
+        answer = []
+        while (s):
+            decoding, s = stringextra.elias_gamma_decode(s, True)
+            answer.append(decoding)
         return answer
