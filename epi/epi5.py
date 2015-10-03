@@ -873,7 +873,9 @@ class P9_EliasGammaCoding:
         """
 
         answer = []
-        while (s):
-            decoding, s = stringextra.elias_gamma_decode(s, True)
+        i = 0
+        length_s = len(s)
+        while (i < length_s):
+            decoding, i = stringextra.elias_gamma_decode(s, i, True)
             answer.append(decoding)
         return answer

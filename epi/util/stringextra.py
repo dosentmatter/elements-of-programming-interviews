@@ -178,25 +178,26 @@ def elias_gamma_encode(x):
     binary_x = int_to_string(x, 2)
     return binary_x.zfill((len(binary_x) - 1) + len(binary_x))
 
-EliasGammaDecoding = namedtuple("EliasGammaDecoding", ["decoding", "next_s"])
+EliasGammaDecoding = \
+            namedtuple("EliasGammaDecoding", ["decoding", "next_code_index"])
 
-def elias_gamma_decode(s, return_next_s=False):
+def elias_gamma_decode(s, index, return_next_code_index=False):
     """
     Returns the Elias gamma decoding of the string s as an integer decoding.
-    If return_next_s is true, return the string s with the first code
-    stripped off as well.
+    Start decoding the first code from the index index.
+    If return_next_code_index is true, return the index of the next code
+    (skips over first code) as well.
     """
 
-    binary_number_start = s.index('1')
-    number_leading_zeros = binary_number_start
+    binary_number_start = s.index('1', index)
+    number_leading_zeros = binary_number_start - index
     binary_number_length = number_leading_zeros + 1
     binary_number_end = binary_number_start + binary_number_length
 
     binary_decoding = s[binary_number_start:binary_number_end]
     decoding = string_to_int(binary_decoding, 2)
 
-    if (return_next_s):
-        next_s = s[binary_number_end:]
-        return EliasGammaDecoding(decoding, next_s)
+    if (return_next_code_index):
+        return EliasGammaDecoding(decoding, binary_number_end)
     else:
         return decoding
