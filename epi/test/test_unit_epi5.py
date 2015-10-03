@@ -384,6 +384,16 @@ class P8_SpreadsheetColumnEncoding_Test(unittest.TestCase):
     def setUp(self):
         self.cls = P8_SpreadsheetColumnEncoding
 
+    def test_column_id_encode(self):
+        column_id_encode = self.cls.column_id_encode
+
+        self.assertEqual(column_id_encode(1), "a")
+        self.assertEqual(column_id_encode(27), "aa")
+        self.assertEqual(column_id_encode(26), "z")
+        self.assertEqual(column_id_encode(55), "bc")
+        self.assertEqual(column_id_encode(702), "zz")
+        self.assertEqual(column_id_encode(703), "aaa")
+
     def test_column_id_decode(self):
         column_id_decode = self.cls.column_id_decode
 
@@ -391,6 +401,8 @@ class P8_SpreadsheetColumnEncoding_Test(unittest.TestCase):
         self.assertEqual(column_id_decode("aa"), 27)
         self.assertEqual(column_id_decode("z"), 26)
         self.assertEqual(column_id_decode("bc"), 55)
+        self.assertEqual(column_id_decode("zz"), 702)
+        self.assertEqual(column_id_decode("aaa"), 703)
 
 def main():
     unittest.main()

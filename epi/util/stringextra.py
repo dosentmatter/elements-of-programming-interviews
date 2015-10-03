@@ -140,6 +140,20 @@ def string_to_int_python(s, base=10):
 
     return int(s, base)
 
+def column_id_digit_encode(x):
+    """
+    Returns the column id digit of the integer x. The column id digit
+    is represented as a length-1 string (a character).
+    Supports up to 26 column ids [a-z]. Column ids will be lowercase.
+    """
+
+    if (x < 1):
+        raise ValueError("x is < 1.")
+    elif (x <= 26): # a to z
+        return chr(ord('a') + (x - 1))
+    else:
+        raise ValueError("x is > 26.")
+
 def column_id_digit_decode(c):
     """
     Returns the integer version of the column id c. c is represented

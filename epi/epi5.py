@@ -818,6 +818,23 @@ class P8_SpreadsheetColumnEncoding:
     _ALPHABET_SIZE = 26
 
     @classmethod
+    def column_id_encode(cls, x):
+        """
+        Returns the encoded (string) version of the integer x.
+
+        The code can't just use % and // directly because when the
+        lowest digit is z, x is divisible by cls._ALPHABET_SIZE.
+        """
+
+        answer = deque()
+        while (x):
+            remainder = ((x - 1) % cls._ALPHABET_SIZE) + 1
+            answer.appendleft(stringextra.column_id_digit_encode(remainder))
+            x = (x - 1) // cls._ALPHABET_SIZE
+
+        return ''.join(answer)
+
+    @classmethod
     def column_id_decode(cls, s):
         """
         Returns the decoded (integer) version of the column id s.
