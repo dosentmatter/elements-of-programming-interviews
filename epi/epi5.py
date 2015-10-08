@@ -1,4 +1,4 @@
-from epi.util import bitmanip, mathextra, stringextra
+from epi.util import bitmanip, mathextra, stringextra, itertoolsextra
 from collections import deque
 
 class P1_Parity:
@@ -126,7 +126,7 @@ class P3_Reverse:
             end = x.bit_length()
 
         number_bits = end - start
-        for offset in range(0, number_bits // 2):
+        for offset in range(number_bits // 2):
             i = start + offset
             i_opposite = (end - 1) - offset
             x = bitmanip.swap_bits_index(x, i, i_opposite)
@@ -811,8 +811,8 @@ class P7_BaseConversion:
 
 class P8_SpreadsheetColumnEncoding:
     """
-    Convert Excel column ids to the corresponding integer, with 'a'
-    corresponding to 1.
+    Convert Excel column ids to and from the corresponding integer,
+    with 'a' corresponding to 1.
     """
 
     _ALPHABET_SIZE = 26
@@ -879,3 +879,191 @@ class P9_EliasGammaCoding:
             decoding, i = stringextra.elias_gamma_decode(s, i, True)
             answer.append(decoding)
         return answer
+
+class P10_GreatestCommonDivisor:
+    """
+    Compute the GCD of two numbers without using multiplication, division,
+    or the modulus operators.
+    """
+
+    @staticmethod
+    def greatest_common_divisor(x, y):
+        """
+        Returns the greatest common divisor of x and y iteratively.
+
+        This works by using Euclid's algorithm as shown in the else case
+        and in the if case when (y == 0). The code keeps x > y.
+        There are some optimizations to Euclid's algorithm by checking
+        when x and y are even.
+        If both x and y are even, you can divide
+        them both by 2 (right shift 1) and multiply the final answer
+        by 2 (left shift 1).
+        If only one is even, you can divide that one by 2 because
+        2 is not a factor of the GCD since the other number isn't
+        divisible by 2. When x is the even one (and y is odd),
+        x gets divided by 2 so you have to check if x is still > y,
+        otherwise you swap them.
+        If they are both odd, follow with the Euclid's alogirthm,
+        which is "The GCD of two numbers does not change if the larger
+        number is replaced by its difference with the smaller number".
+        You have to check if x and y need to be swapped in this case
+        as well, to keep x > y.
+        """
+
+        if (x < y):
+            x, y = y, x
+
+        import pdb
+        shift_multiplier = 0
+        while (True):
+            if (y == 0):
+                return x << shift_multiplier
+
+            x_is_even = mathextra.is_even(x)
+            x_is_odd = not x_is_even
+            y_is_even = mathextra.is_even(y)
+            y_is_odd = not y_is_even
+
+            if (x_is_even and y_is_even):
+                x >>= 1
+                y >>= 1
+                shift_multiplier += 1
+            elif (x_is_odd and y_is_even):
+                y >>= 1
+            elif (x_is_even and y_is_odd):
+                x >>= 1
+                if (x < y):
+                    x, y = y, x
+            else:
+                x -= y
+                if (x < y):
+                    x, y = y, x
+
+class P11_GeneratePrimes:
+    """
+    Given a single positive integer argument, n >= 2, return all the primes
+    less than or equal to n.
+    """
+
+    @staticmethod
+    def generate_primes(n):
+        """
+        Return a generator of prime numbers from [1, n].
+
+        This works by doing the Sieve of Eratosthenes algorithm. It is
+        optimized by skipping even elements when generating the sieve.
+        By doing this optimization, there must be a conversion functions
+        to convert from the sieve indices to what number it represents.
+
+        Here are the 3 optimizations being done:
+        1. The sieve does not represent 0, 1, 2, and even numbers.
+        2. Start marking the sieve from prime_number * prime_number.
+        3. When marking the sieve, only step an even amount so only odd
+           numbers are marked.
+
+        The optimization skips the first 3 elements, 0, 1, and 2 because
+        0, and 1 are known non-primes and 2 is a known-prime. We skip
+        all even numbers because they are known non-primes. I call
+        the sieve the prime_boolean_list below.
+        This means the conversion function is the following:
+        number = (2 * index) + 3
+        For example, index == 0 -> number == 3. This is correct as 0, 1, and 2
+        are skipped.
+        index == 1 -> number == 5. This is also correct as it is the next odd
+        number.
+        The inverse of the function is also true:
+        index = (number - 3) // 2
+        index will always be a whole number because number only represents
+        odd numbers >= 3 as stated above.
+
+        Here is an example of the mapping from index to number:
+        prime_boolean_list indices:
+        0, 1, 2, 3,  4,  5,  6
+        number represented:
+        3, 5, 7, 9, 11, 13, 15
+
+        There is another optimization in the nested for loop range(). There
+        is a start and step optimization.
+
+        start optimization:
+        Once you find a prime number in the outer loop, you start to mark
+        numbers (prime_number * k) | k is a whole number
+        Of course, k only increases until the max number represented in the
+        sieve.
+        The optimization is instead to do
+        (prime_number * k) | k >= prime_number, k is a whole number
+        This is because
+        (prime_number * s) | 0 <= s < prime_number, s is a whole number
+        has been marked in previous iterations by smaller prime numbers since
+        s < prime_number.
+        This optimization is why
+        sieve_start_number == prime_number * prime_number
+        Of course, we have to convert sieve_start_number to
+        sieve_start_prime_boolean_index to index the sieve correctly.
+
+        step optimization:
+        All primes, besides 2, are odd because even numbers have a factor of 2.
+        This means
+        (prime_number * k) | k >= prime_number, k is a whole number
+        can be optimized to
+        (prime_number * k) | k >= prime_number, k is an odd whole number
+        This is because (prime_number * k) is only odd if k is odd. All the
+        even numbers are already marked (in this optimized version, they were
+        all skipped so without this optimization, a fractional index would
+        be indexed since even numbers don't exist in the sieve. Note that
+        this fractional index would have been rounded down due to the use of
+        // in number_to_prime_boolean_index) so we can skip them.
+
+        The whole optmization is equivalent to:
+        (prime_number * (prime_number + 2*k)) | k is a whole number
+        or
+        ((prime_number * prime_number) + 2*k*prime_number)) | k is a
+        whole number
+        From this, you can see that
+        sieve_start_number == prime_number * prime_number
+        and
+        sieve_step_number_vector == 2 * p
+        These have to be converted to prime boolean index and vectors
+        respectively. sieve_step_number_vector is a vector because a step
+        specifies a change in position (or index). Vectors are unaffected
+        by shifts so number_vector_to_prime_boolean_vector is
+        just number_prime_to_boolean_index without the -3 shift.
+        """
+
+        yield 2
+
+        # these are inverse functions
+        prime_boolean_index_to_number = lambda i: (2 * i) + 3
+        number_to_prime_boolean_index = lambda n: (n - 3) // 2
+
+        # vectors are unaffected by shifts
+        number_vector_to_prime_boolean_vector = lambda nv: nv // 2
+
+        prime_boolean_list_length = itertoolsextra.range_length(3, n + 1, 2)
+        prime_boolean_list = [True] * prime_boolean_list_length
+        for (i, is_prime) in enumerate(prime_boolean_list):
+            if (is_prime):
+                prime_number = prime_boolean_index_to_number(i)
+                yield prime_number
+
+                sieve_start_number = prime_number * prime_number
+                sieve_start_prime_boolean_index = \
+                        number_to_prime_boolean_index(sieve_start_number)
+
+                sieve_step_number_vector = 2 * prime_number
+                sieve_step_prime_boolean_vector = \
+                    number_vector_to_prime_boolean_vector(
+                                                sieve_step_number_vector)
+
+                for j in range(sieve_start_prime_boolean_index,
+                               prime_boolean_list_length,
+                               sieve_step_prime_boolean_vector):
+                    prime_boolean_list[j] = False
+
+    @classmethod
+    def generate_primes_list(cls, n):
+        """
+        Return a list of prime numbers from [1, n].
+        """
+
+        return list(cls.generate_primes(n))

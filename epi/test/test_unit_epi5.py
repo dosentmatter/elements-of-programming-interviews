@@ -438,6 +438,41 @@ class P9_EliasGammaCoding_Test(unittest.TestCase):
             self.assertEqual(
                     elias_gamma_list_decode(self.CODESTRINGS[i]), self.LISTS[i])
 
+class P10_GreatestCommonDivisor_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P10_GreatestCommonDivisor
+
+    def test_greatest_common_divisor(self):
+        greatest_common_divisor = self.cls.greatest_common_divisor
+
+        self.assertEqual(greatest_common_divisor(64, 6), 2)
+        self.assertEqual(greatest_common_divisor(2310, 210), 210)
+        self.assertEqual(greatest_common_divisor(810, 472), 2)
+        self.assertEqual(greatest_common_divisor(871, 2132), 13)
+        self.assertEqual(greatest_common_divisor(8912, 184), 8)
+        self.assertEqual(greatest_common_divisor(813289, 937402), 1)
+
+class P11_GeneratePrimes_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P11_GeneratePrimes
+
+        self.MAX_NUMBERS = []
+        self.PRIMES_LISTS = []
+
+        self.MAX_NUMBERS.append(100)
+        self.PRIMES_LISTS.append([2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
+                                  31, 37, 41, 43, 47, 53, 59, 61, 67,
+                                  71, 73, 79, 83, 89, 97])
+
+    def test_generate_primes(self):
+        generate_primes_list = self.cls.generate_primes_list
+
+        for i in range(len(self.MAX_NUMBERS)):
+            self.assertEqual(
+                generate_primes_list(self.MAX_NUMBERS[i]), self.PRIMES_LISTS[i])
+
 def main():
     unittest.main()
 
