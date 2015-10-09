@@ -651,6 +651,16 @@ class P6_StringIntegerConversion:
     Implement string/integer inter-conversion functions.
 
     The int_to_string methods run at about the same speed.
+
+    Joining an iterator is supposed to be slower because Python goes
+    through the data twice - one pass to add up the lengths of
+    the string fragments so it knows how much memory to allocate
+    for the final result, and a second pass to copy the string
+    fragments into the new buffer to create a single new string.
+    It creates a temporary list of the generator in the first
+    pass to use for the second pass. However, I don't notice
+    the difference in performance between the iterators and
+    string/collections below.
     """
 
     @staticmethod
