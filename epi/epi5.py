@@ -923,7 +923,6 @@ class P10_GreatestCommonDivisor:
         if (x < y):
             x, y = y, x
 
-        import pdb
         shift_multiplier = 0
         while (True):
             if (y == 0):
