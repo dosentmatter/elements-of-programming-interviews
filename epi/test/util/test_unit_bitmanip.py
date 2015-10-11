@@ -12,18 +12,22 @@ class ones_Test(unittest.TestCase):
 class get_bit_Test(unittest.TestCase):
 
     def test_get_bit(self):
-        self.assertEqual(get_bit(15, 0), 1)
-        self.assertEqual(get_bit(15, 1), 1)
-        self.assertEqual(get_bit(15, 2), 1)
-        self.assertEqual(get_bit(15, 3), 1)
+        x = 15
+
+        self.assertEqual(get_bit(x, 0), 1)
+        self.assertEqual(get_bit(x, 1), 1)
+        self.assertEqual(get_bit(x, 2), 1)
+        self.assertEqual(get_bit(x, 3), 1)
 
 class get_bit_position_Test(unittest.TestCase):
 
     def test_get_bit_position(self):
-        self.assertEqual(get_bit_position(15, 0), 1)
-        self.assertEqual(get_bit_position(15, 1), 2)
-        self.assertEqual(get_bit_position(15, 2), 4)
-        self.assertEqual(get_bit_position(15, 3), 8)
+        x = 15
+
+        self.assertEqual(get_bit_position(x, 0), 1)
+        self.assertEqual(get_bit_position(x, 1), 2)
+        self.assertEqual(get_bit_position(x, 2), 4)
+        self.assertEqual(get_bit_position(x, 3), 8)
 
 class set_bit_Test(unittest.TestCase):
 
