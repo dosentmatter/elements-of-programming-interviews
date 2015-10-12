@@ -145,31 +145,44 @@ def generate_primes(n):
                 prime_boolean_list[j] = False
 
 def is_prime(x):
+    """
+    Returns True if x is prime.
+
+    This is a naive primality test. There are faster ones. This function
+    uses the fact that all primes except 2 and 3 are 1 away from 6, so
+    this checks if the numbers 5,6, 11,13, 17,19, etc. are factors of x.
+    """
+
     if (x <= 1):
         return False
-    elif ((x == 2) or (x == 3)):
+    elif (x <= 3):
         return True
     x_mod_6 = x % 6
-    if ((x_mod_6 != 1) or (x_mod_6 != 5)):
+    if ((x_mod_6 != 1) and (x_mod_6 != 5)):
         return False
 
-    if ((x % 2) == 0):
-        return False
-
-    i = 3
+    i = 5
     while ((i * i) <= x):
-        if ((x % i) == 0):
+        if (((x % i) == 0) or ((x % (i + 2)) == 0)):
             return False
-        i += 2
+        i += 6
     return True
 
 def is_prime_sieve(x):
+    """
+    Returns True if x is prime.
+
+    This generates a sieve and iterates through all the primes generated
+    by the sieve to check if they are factors of x. It is slower than
+    the is_prime() function.
+    """
+
     if (x <= 1):
         return False
-    elif ((x == 2) or (x == 3)):
+    elif (x <= 3):
         return True
     x_mod_6 = x % 6
-    if ((x_mod_6 != 1) or (x_mod_6 != 5)):
+    if ((x_mod_6 != 1) and (x_mod_6 != 5)):
         return False
 
     sqrt_x = int_sqrt(x)
@@ -179,9 +192,37 @@ def is_prime_sieve(x):
     return True
 
 def int_sqrt(x):
-    a = x
-    b = (a + 1) // 2
-    while (b < a):
-        a = b
-        b = (a + x//a) // 2
-    return a
+    """
+    Returns the integer square root of x using Newton's method.
+
+    This function starts with a guess of x and keeps updating
+    the guess as long as it lowers. When it increases, it returns
+    the previous guess.
+
+    The guess formula comes form Newton's method. Here is the derivation:
+    Let g0, g1 == guess, next_guess.
+    Integer Newton's method:
+    g1 = g0 - f(g0)//f'(g0)
+
+    x is the input to this function.
+    f(g) = g**2 - x
+    f'(g) = 2g
+
+    g1 = g0 - f(g0)//f'(g0)
+    g1 = g0 - (g0**2 - x)//(2*g0)
+    g1 = g0 + (x - g0**2)//(2*g0)
+    g1 = g0 + (x//g0 - g0)//2
+    g1 = (g0 + x//g0) // 2
+    """
+
+    if (x < 0):
+        raise ValueError("math domain error")
+
+    update = lambda guess: (guess + x//guess) // 2
+
+    guess = x
+    next_guess = update(guess)
+    while (next_guess < guess):
+        guess = next_guess
+        next_guess = update(guess)
+    return guess
