@@ -61,11 +61,11 @@ class P2_SwapBits_Test(unittest.TestCase):
     def setUp(self):
         self.cls = P2_SwapBits
 
-    def test_quick_swap(self):
-        quick_swap = self.cls.quick_swap
-        self.assertEqual(quick_swap(1, 0, 1), 2)
-        self.assertEqual(quick_swap(2, 1, 0), 1)
-        self.assertEqual(quick_swap(1, 63, 0), 1 << 63)
+    def test_swap_bits_index(self):
+        swap_bits_index = self.cls.swap_bits_index
+        self.assertEqual(swap_bits_index(1, 0, 1), 2)
+        self.assertEqual(swap_bits_index(2, 1, 0), 1)
+        self.assertEqual(swap_bits_index(1, 63, 0), 1 << 63)
 
 class P3_Reverse_Test(unittest.TestCase):
 
