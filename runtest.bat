@@ -14,7 +14,7 @@ if %argC% EQU 0 (
     @echo off
 )
 
-REM This checks cmdcmdlineline for "/c". If it exists, that means this .bat was
+REM This checks cmdcmdline for "/c". If it exists, that means this .bat was
 REM double clicked. The "%%~x" adds quotes on the outside "" and the tilde means
 REM to remove quotes leaving only one pair of quotes and not two.
 REM This only pauses if double clicked.
