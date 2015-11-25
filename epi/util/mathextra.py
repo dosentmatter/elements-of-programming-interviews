@@ -470,27 +470,27 @@ class Abstract_Point(metaclass=ABCMeta):
         Return the Region self is in.
         """
 
-        if ((self.x == 0) and (self.y == 0)):
-            return Abstract_Point.Region.ORIGIN
+        if (self.x > 0):
+            if (self.y > 0):
+                return Abstract_Point.Region.QUADRANT1
+            elif (self.y == 0):
+                return Abstract_Point.Region.POSITIVE_X
+            else: # self.y < 0
+                return Abstract_Point.Region.QUADRANT4
         elif (self.x == 0):
             if (self.y > 0):
                 return Abstract_Point.Region.POSITIVE_Y
+            elif (self.y == 0):
+                return Abstract_Point.Region.ORIGIN
             else: # self.y < 0
                 return Abstract_Point.Region.NEGATIVE_Y
-        elif (self.y == 0):
-            if (self.x > 0):
-                return Abstract_Point.Region.POSITIVE_X
-            else: # self.x < 0
-                return Abstract_Point.Region.NEGATIVE_X
-        else:
-            if ((self.x > 0) and (self.y > 0)):
-                return Abstract_Point.Region.QUADRANT1
-            elif ((self.x < 0) and (self.y > 0)):
+        else: # self.x < 0
+            if (self.y > 0):
                 return Abstract_Point.Region.QUADRANT2
-            elif ((self.x < 0) and (self.y < 0)):
+            elif (self.y == 0):
+                return Abstract_Point.Region.NEGATIVE_X
+            else: # self.y < 0
                 return Abstract_Point.Region.QUADRANT3
-            else: # (self.x > 0) and (self.y < 0)
-                return Abstract_Point.Region.QUADRANT4
 
 class Frozen_Point(Abstract_Point):
     """
