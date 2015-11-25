@@ -1,4 +1,4 @@
-from epi.util import bitmanip, mathextra, stringextra, itertoolsextra
+from epi.util import bitmanip, mathextra, stringextra, itertoolsextra, python
 from collections import deque
 
 class P1_Parity:
@@ -102,7 +102,7 @@ class P2_SwapBits:
     """
 
     @staticmethod
-    def swap_bits_index(x, i, j=None):
+    def swap_bits_index(x, i, j=python.Parameter.OTHER_ARGUMENT):
         """
         Return x with bits swapped by toggling bits i and j of x if different.
         j defaults to i + 1.
@@ -233,8 +233,8 @@ class P3_Reverse:
 class P4_ClosestSameBits:
     """
     x is a 64-bit (or more) number with k bits set high, k != 0, 64 (or more).
-	Find a number y that also has k bits set high and is
-	closest to x (either greater or less than x).
+    Find a number y that also has k bits set high and is
+    closest to x (either greater or less than x).
     """
 
     @staticmethod
@@ -968,3 +968,30 @@ class P11_GeneratePrimes:
         """
 
         return list(cls.generate_primes(n))
+
+class P12_RectanglesIntersect:
+    """
+    Let R and S be xy-aligned rectangles in the Cartesian plane. Write a
+    function which tests if R and S have nonempty intersection. If the
+    intersection is nonempty, return the rectangle formed by their
+    intersection.
+    """
+
+    @staticmethod
+    def intersects(R, S):
+        """
+        Return True if R intersects with S. This also considers
+        the rectangles intersecting if they touch by a line or a point
+        (0 area).
+        """
+
+        return R.intersects(S)
+
+    @staticmethod
+    def intersection(R, S):
+        """
+        Return the Rectangle formed from the intersection of R and
+        S. If there is no intersection, return None.
+        """
+
+        return R.intersection(S)

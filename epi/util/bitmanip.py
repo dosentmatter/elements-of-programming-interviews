@@ -1,3 +1,5 @@
+from epi.util import python
+
 def ones(n, offset=0):
     """
     Return a number that is a stream of n 1's with an offset. If
@@ -186,13 +188,13 @@ def split_bits_bit_array(x, bit_array):
 
     return lower, upper
 
-def swap_bits_index(x, i, j=None):
+def swap_bits_index(x, i, j=python.Parameter.OTHER_ARGUMENT):
     """
     Return x with bits swapped by toggling bits i and j of x if different.
     j defaults to i + 1.
     """
 
-    if (j == None):
+    if (j is python.Parameter.OTHER_ARGUMENT):
         j = i + 1
 
     if (get_bit(x, i) != get_bit(x, j)):

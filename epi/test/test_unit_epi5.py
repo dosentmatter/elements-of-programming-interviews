@@ -459,15 +459,15 @@ class P11_GeneratePrimes_Test(unittest.TestCase):
         self.cls = P11_GeneratePrimes
 
         self.MAX_NUMBERS = []
-        self.PRIMES_LISTS = []
+        self.PRIMES_LIST = []
 
         self.MAX_NUMBERS.append(100)
-        self.PRIMES_LISTS.append([2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
+        self.PRIMES_LIST.append([2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
                                   31, 37, 41, 43, 47, 53, 59, 61, 67,
                                   71, 73, 79, 83, 89, 97])
 
         self.MAX_NUMBERS.append(200)
-        self.PRIMES_LISTS.append([2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
+        self.PRIMES_LIST.append([2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
                                   31, 37, 41, 43, 47, 53, 59, 61, 67,
                                   71, 73, 79, 83, 89, 97, 101, 103, 107,
                                   109, 113, 127, 131, 137, 139, 149, 151,
@@ -475,7 +475,7 @@ class P11_GeneratePrimes_Test(unittest.TestCase):
                                   197, 199])
 
         self.MAX_NUMBERS.append(300)
-        self.PRIMES_LISTS.append([2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
+        self.PRIMES_LIST.append([2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
                                  31, 37, 41, 43, 47, 53, 59, 61, 67,
                                  71, 73, 79, 83, 89, 97, 101, 103, 107,
                                  109, 113, 127, 131, 137, 139, 149, 151,
@@ -484,12 +484,172 @@ class P11_GeneratePrimes_Test(unittest.TestCase):
                                  241, 251, 257, 263, 269, 271, 277, 281,
                                  283, 293])
 
-    def test_generate_primes(self):
+    def test_generate_primes_list(self):
         generate_primes_list = self.cls.generate_primes_list
 
         for i in range(len(self.MAX_NUMBERS)):
             self.assertEqual(
-                generate_primes_list(self.MAX_NUMBERS[i]), self.PRIMES_LISTS[i])
+                generate_primes_list(self.MAX_NUMBERS[i]), self.PRIMES_LIST[i])
+
+class P12_RectanglesIntersect_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P12_RectanglesIntersect
+
+        Rectangle = mathextra.Rectangle
+        Frozen_Point = mathextra.Frozen_Point
+
+        point = Frozen_Point(0, 0)
+        rectangle = Rectangle.create_from_lower_left(point, 5, 5)
+        self.BASE_RECTANGLE = rectangle
+
+        self.INTERSECT_RECTANGLES = []
+
+        point = self.BASE_RECTANGLE.lower_right_point + Frozen_Point(-1, 1)
+        rectangle = Rectangle.create_from_upper_left(point, 3, 3)
+        self.INTERSECT_RECTANGLES.append(rectangle)
+        rectangle = Rectangle.create_from_lower_left(point, 3, 3)
+        self.INTERSECT_RECTANGLES.append(rectangle)
+
+        point = self.BASE_RECTANGLE.upper_right_point + Frozen_Point(-1, -1)
+        rectangle = Rectangle.create_from_lower_left(point, 3, 3)
+        self.INTERSECT_RECTANGLES.append(rectangle)
+        rectangle = Rectangle.create_from_lower_right(point, 3, 3)
+        self.INTERSECT_RECTANGLES.append(rectangle)
+
+        point = self.BASE_RECTANGLE.upper_left_point + Frozen_Point(1, -1)
+        rectangle = Rectangle.create_from_lower_right(point, 3, 3)
+        self.INTERSECT_RECTANGLES.append(rectangle)
+        rectangle = Rectangle.create_from_upper_right(point, 3, 3)
+        self.INTERSECT_RECTANGLES.append(rectangle)
+
+        point = self.BASE_RECTANGLE.lower_left_point + Frozen_Point(1, 1)
+        rectangle = Rectangle.create_from_upper_right(point, 3, 3)
+        self.INTERSECT_RECTANGLES.append(rectangle)
+        rectangle = Rectangle.create_from_upper_left(point, 3, 3)
+        self.INTERSECT_RECTANGLES.append(rectangle)
+
+        point = self.BASE_RECTANGLE.lower_right_point
+        rectangle = Rectangle.create_from_upper_left(point, 3, 3)
+        self.INTERSECT_RECTANGLES.append(rectangle)
+
+        point = self.BASE_RECTANGLE.upper_right_point
+        rectangle = Rectangle.create_from_lower_left(point, 3, 3)
+        self.INTERSECT_RECTANGLES.append(rectangle)
+
+        point = self.BASE_RECTANGLE.upper_left_point
+        rectangle = Rectangle.create_from_lower_right(point, 3, 3)
+        self.INTERSECT_RECTANGLES.append(rectangle)
+
+        point = self.BASE_RECTANGLE.lower_left_point
+        rectangle = Rectangle.create_from_upper_right(point, 3, 3)
+        self.INTERSECT_RECTANGLES.append(rectangle)
+
+
+        self.NON_INTERSECT_RECTANGLES = []
+
+        point = self.BASE_RECTANGLE.lower_right_point + Frozen_Point(1, -1)
+        rectangle = Rectangle.create_from_upper_left(point, 3, 3)
+        self.NON_INTERSECT_RECTANGLES.append(rectangle)
+
+        point = self.BASE_RECTANGLE.upper_right_point + Frozen_Point(1, 1)
+        rectangle = Rectangle.create_from_lower_left(point, 3, 3)
+        self.NON_INTERSECT_RECTANGLES.append(rectangle)
+
+        point = self.BASE_RECTANGLE.upper_left_point + Frozen_Point(-1, 1)
+        rectangle = Rectangle.create_from_lower_right(point, 3, 3)
+        self.NON_INTERSECT_RECTANGLES.append(rectangle)
+
+        point = self.BASE_RECTANGLE.lower_left_point + Frozen_Point(-1, -1)
+        rectangle = Rectangle.create_from_upper_right(point, 3, 3)
+        self.NON_INTERSECT_RECTANGLES.append(rectangle)
+
+    def test_intersects(self):
+        intersects = self.cls.intersects
+
+        all_intersect = all(intersects(self.BASE_RECTANGLE, rectangle) \
+                            for rectangle in self.INTERSECT_RECTANGLES)
+        self.assertTrue(all_intersect)
+
+        none_intersect = all(not intersects(self.BASE_RECTANGLE, rectangle) \
+                             for rectangle in self.NON_INTERSECT_RECTANGLES)
+        self.assertTrue(none_intersect)
+
+    def test_intersection(self):
+        intersection = self.cls.intersection
+
+        Rectangle = mathextra.Rectangle
+        Frozen_Point = mathextra.Frozen_Point
+
+        point = self.BASE_RECTANGLE.lower_right_point + Frozen_Point(-1, 1)
+        rectangle = Rectangle.create_from_upper_left(point, 1, 1)
+        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+                                              self.INTERSECT_RECTANGLES[0])
+        self.assertEqual(rectangle, intersection_rectangle)
+        rectangle = Rectangle.create_from_lower_left(point, 1, 3)
+        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+                                              self.INTERSECT_RECTANGLES[1])
+        self.assertEqual(rectangle, intersection_rectangle)
+
+        point = self.BASE_RECTANGLE.upper_right_point + Frozen_Point(-1, -1)
+        rectangle = Rectangle.create_from_lower_left(point, 1, 1)
+        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+                                              self.INTERSECT_RECTANGLES[2])
+        self.assertEqual(rectangle, intersection_rectangle)
+        rectangle = Rectangle.create_from_lower_right(point, 3, 1)
+        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+                                              self.INTERSECT_RECTANGLES[3])
+        self.assertEqual(rectangle, intersection_rectangle)
+
+        point = self.BASE_RECTANGLE.upper_left_point + Frozen_Point(1, -1)
+        rectangle = Rectangle.create_from_lower_right(point, 1, 1)
+        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+                                              self.INTERSECT_RECTANGLES[4])
+        self.assertEqual(rectangle, intersection_rectangle)
+        rectangle = Rectangle.create_from_upper_right(point, 1, 3)
+        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+                                              self.INTERSECT_RECTANGLES[5])
+        self.assertEqual(rectangle, intersection_rectangle)
+
+        point = self.BASE_RECTANGLE.lower_left_point + Frozen_Point(1, 1)
+        rectangle = Rectangle.create_from_upper_right(point, 1, 1)
+        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+                                              self.INTERSECT_RECTANGLES[6])
+        self.assertEqual(rectangle, intersection_rectangle)
+        rectangle = Rectangle.create_from_upper_left(point, 3, 1)
+        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+                                              self.INTERSECT_RECTANGLES[7])
+        self.assertEqual(rectangle, intersection_rectangle)
+
+        point = self.BASE_RECTANGLE.lower_right_point
+        rectangle = Rectangle.create_from_upper_left(point, 0, 0)
+        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+                                              self.INTERSECT_RECTANGLES[8])
+        self.assertEqual(rectangle, intersection_rectangle)
+
+        point = self.BASE_RECTANGLE.upper_right_point
+        rectangle = Rectangle.create_from_lower_left(point, 0, 0)
+        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+                                              self.INTERSECT_RECTANGLES[9])
+        self.assertEqual(rectangle, intersection_rectangle)
+
+        point = self.BASE_RECTANGLE.upper_left_point
+        rectangle = Rectangle.create_from_lower_right(point, 0, 0)
+        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+                                              self.INTERSECT_RECTANGLES[10])
+        self.assertEqual(rectangle, intersection_rectangle)
+
+        point = self.BASE_RECTANGLE.lower_left_point
+        rectangle = Rectangle.create_from_upper_right(point, 0, 0)
+        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+                                              self.INTERSECT_RECTANGLES[11])
+        self.assertEqual(rectangle, intersection_rectangle)
+
+
+        none_intersect = all(intersection(self.BASE_RECTANGLE, \
+                                          rectangle) is None \
+                             for rectangle in self.NON_INTERSECT_RECTANGLES)
+        self.assertTrue(none_intersect)
 
 def main():
     unittest.main()

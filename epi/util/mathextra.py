@@ -1,5 +1,9 @@
 import fractions
-from epi.util import itertoolsextra
+import math
+from epi.util import itertoolsextra, python
+from collections import namedtuple
+from enum import Enum
+from abc import ABCMeta, abstractmethod
 
 def n_choose_r(n, r):
     """
@@ -146,7 +150,7 @@ def generate_primes(n):
 
 def is_prime(x):
     """
-    Returns True if x is prime.
+    Return True if x is prime.
 
     This is a naive primality test. There are faster ones. This function
     uses the fact that all primes except 2 and 3 are 1 away from 6, so
@@ -162,7 +166,7 @@ def is_prime(x):
         return False
 
     i = 5
-    while ((i * i) <= x):
+    while ((i**2) <= x):
         if (((x % i) == 0) or ((x % (i + 2)) == 0)):
             return False
         i += 6
@@ -170,7 +174,7 @@ def is_prime(x):
 
 def is_prime_sieve(x):
     """
-    Returns True if x is prime.
+    Return True if x is prime.
 
     This generates a sieve and iterates through all the primes generated
     by the sieve to check if they are factors of x. It is slower than
@@ -193,7 +197,7 @@ def is_prime_sieve(x):
 
 def int_sqrt(x):
     """
-    Returns the integer square root of x using Newton's method.
+    Return the integer square root of x using Newton's method.
 
     This function starts with a guess of x and keeps updating
     the guess as long as it lowers. When it increases, it returns
@@ -226,3 +230,736 @@ def int_sqrt(x):
         guess = next_guess
         next_guess = update(guess)
     return guess
+
+class Abstract_Point(metaclass=ABCMeta):
+    """
+    A 2-dimensional point on the Cartesian coordinates. This class also
+    acts like a vector since it has methods such as __add__ and norm.
+
+    The following point classes show how to use abstract classes and
+    immutable classes. It gets messy with multiple inheritance so it would
+    probably be better to allow a class to be mutable and implement a hash
+    method but promise to treat the class as immutable if using hash.
+    """
+
+    @abstractmethod
+    def __setattr__(self, name, value):
+        """
+        Abstract method so subclasses decide whether the point is mutable.
+        """
+
+        pass
+
+    @abstractmethod
+    def __delattr__(self, name):
+        """
+        Abstract method so subclasses decide whether the point is mutable.
+        """
+
+        pass
+
+    def __init__(self, x, y):
+        """
+        Sets x and y using object's __setattr__() because this class'
+        __setattr__() is overridden.
+        """
+
+        object.__setattr__(self, "x", x)
+        object.__setattr__(self, "y", y)
+
+    def shallow_copy(self,
+                     x=python.Parameter.OTHER_ARGUMENT,
+                     y=python.Parameter.OTHER_ARGUMENT):
+        """
+        Return a shallow copy of self. The type of object returned
+        is the same as the type of self. If x or y is passed, set the x
+        or y in the copy.
+        """
+
+        if (x is python.Parameter.OTHER_ARGUMENT):
+            x = self.x
+        if (y is python.Parameter.OTHER_ARGUMENT):
+            y = self.y
+
+        return self.__class__(x, y)
+
+    """
+    deep_copy is the same as shallow_copy because x and y are numbers,
+    so they don't need to be deep copied.
+    """
+    deep_copy = shallow_copy
+
+    def __add__(self, other):
+        """
+        Add other to self and return. Works like vector addition.
+        """
+
+        x = self.x + other.x
+        y = self.y + other.y
+        return self.shallow_copy(x, y)
+
+    def __radd__(self, other):
+        """
+        Reverse add other to self and return.
+
+        Checks if other == 0 to support sum() which starts with
+        a sum of 0.
+        """
+
+        if other == 0:
+            return self
+        else:
+            return self.__add__(other)
+
+    def __sub__(self, other):
+        """
+        Subtract other from self and return.
+        """
+
+        x = self.x - other.x
+        y = self.y - other.y
+        return self.shallow_copy(x, y)
+
+    def __mul__(self, other):
+        """
+        Dot multiply self by other and return. If other is a scalar,
+        multiply x and y of self by other.
+        """
+
+        if (hasattr(other, "x") and hasattr(other, "y")):
+            x = self.x * other.x
+            y = self.y * other.y
+        else:
+            x = self.x * other
+            y = self.y * other
+        return self.shallow_copy(x, y)
+
+    def __rmul__(self, other):
+        """
+        Reverse Multiply self by other and return.
+        """
+
+        return self.__mul__(other)
+
+    def __truediv__(self, other):
+        """
+        Dot truediv self by other and return. If other is a scalar,
+        truediv x and y of self by other.
+        """
+
+        if (hasattr(other, "x") and hasattr(other, "y")):
+            x = self.x / other.x
+            y = self.y / other.y
+        else:
+            x = self.x / other
+            y = self.y / other
+        return self.shallow_copy(x, y)
+
+    def __floordiv__(self, other):
+        """
+        Dot floordiv self by other and return. If other is a scalar,
+        floordiv x and y of self by other.
+        """
+
+        if (hasattr(other, "x") and hasattr(other, "y")):
+            x = self.x // other.x
+            y = self.y // other.y
+        else:
+            x = self.x // other
+            y = self.y // other
+        return self.shallow_copy(x, y)
+
+    def __abs__(self):
+        """
+        Return a copy of self with positive x and y.
+        """
+
+        return self.shallow_copy(abs(self.x), abs(self.y))
+
+    def __neg__(self):
+        """
+        Return a copy of self with x and y negated.
+        """
+
+        return self.shallow_copy(-self.x, -self.y)
+
+    def __pos__(self):
+        """
+        Return a copy of self.
+        """
+
+        return self.shallow_copy(self.x, self.y)
+
+    def __eq__(self, other):
+        """
+        Return True if self is equal to other.
+
+        __eq__(), _can_equal(), and _attributes_equal() should be
+        overridden together.
+        This works by having subclasses inherit this class' _can_equal()
+        if it is not overridden. If _can_equal() is not overridden, that
+        means the subclass is similar to a Abstract_Point so it uses
+        Abstract_Point's _can_equal() and the subclass can be equal to a
+        Abstract_Point.
+        """
+
+        return isinstance(other, Abstract_Point) and other._can_equal(self) and \
+               self._attributes_equal(other)
+
+    def _can_equal(self, other):
+        """
+        Return True if other can be equal to self.
+        """
+
+        return isinstance(other, Abstract_Point)
+
+    def _attributes_equal(self, other):
+        """
+        Return True if all attributes of self and other are equal.
+        """
+
+        return (self.x == other.x) and (self.y == other.y)
+
+    def __ne__(self, other):
+        """
+        Return True if self is not equal to other.
+        """
+
+        return not self.__eq__(other)
+
+    def norm(self):
+        """
+        Return the norm (magnitude) of self as if it was a vector.
+        """
+
+        return math.sqrt(self.x**2 + self.y**2)
+
+    def __repr__(self):
+        """
+        Return the representation of self. Looks like Abstract_Point(x=1, y=2).
+        """
+
+        return "{}(x={!r}, y={!r})".format(self.__class__.__name__, self.x, self.y)
+
+    def __iter__(self):
+        """
+        Return an iterator of self.
+        """
+
+        yield x
+        yield y
+
+    class Region(Enum):
+        """
+        The part of the graph this point is on.
+        """
+
+        ORIGIN = 1
+        POSITIVE_X = 2
+        NEGATIVE_X = 3
+        POSITIVE_Y = 4
+        NEGATIVE_Y = 5
+        QUADRANT1 = 6
+        QUADRANT2 = 7
+        QUADRANT3 = 8
+        QUADRANT4 = 9
+
+    @property
+    def region(self):
+        """
+        Return the Region self is in.
+        """
+
+        if ((self.x == 0) and (self.y == 0)):
+            return Abstract_Point.Region.ORIGIN
+        elif (self.x == 0):
+            if (self.y > 0):
+                return Abstract_Point.Region.POSITIVE_Y
+            else: # self.y < 0
+                return Abstract_Point.Region.NEGATIVE_Y
+        elif (self.y == 0):
+            if (self.x > 0):
+                return Abstract_Point.Region.POSITIVE_X
+            else: # self.x < 0
+                return Abstract_Point.Region.NEGATIVE_X
+        else:
+            if ((self.x > 0) and (self.y > 0)):
+                return Abstract_Point.Region.QUADRANT1
+            elif ((self.x < 0) and (self.y > 0)):
+                return Abstract_Point.Region.QUADRANT2
+            elif ((self.x < 0) and (self.y < 0)):
+                return Abstract_Point.Region.QUADRANT3
+            else: # (self.x > 0) and (self.y < 0)
+                return Abstract_Point.Region.QUADRANT4
+
+class Frozen_Point(Abstract_Point):
+    """
+    An immutable Abstract_Point. This class is immutable and subclasses
+    should be immutable.
+    """
+
+    def __setattr__(self, *args):
+        """
+        Cannot set attributes because immutable.
+        """
+
+        raise TypeError("Cannot modify immutable instance")
+
+    """
+    Cannot delete attributes because immutable.
+    """
+    __delattr__ = __setattr__
+
+    def __hash__(self):
+        """
+        Return self's hash.
+
+        Hashable because immutable. If __eq__ is overridden, must
+        override this as well. Equal points should have the same hash.
+        """
+
+        return hash((self.x, self.y))
+
+    def __init__(self, x, y):
+        """
+        Initialize x, y, and _region to use as a cache for the region
+        since it won't change for an immutable Abstract_Point.
+        """
+
+        super().__init__(x, y)
+        object.__setattr__(self, "_region", None)
+
+    @property
+    def region(self):
+        """
+        Return and cache (if not already cached) the region self is in.
+        """
+
+        if (self._region is None):
+            object.__setattr__(self, "_region", super().region)
+        return self._region
+
+class Abstract_Colored_Point(Abstract_Point):
+    """
+    An Abstract_Point that has a color.
+
+    This is an example class on how to create subclasses. This is also
+    an abstract class liken Abstract_Point because it doesn't override
+    __setattr__() and __delattr__().
+    """
+
+    def __init__(self, x, y, color):
+        """
+        Initialize x, y, and color for self.
+        """
+
+        super().__init__(x, y)
+        object.__setattr__(self, "color", color)
+
+    def shallow_copy(self,
+                     x=python.Parameter.OTHER_ARGUMENT,
+                     y=python.Parameter.OTHER_ARGUMENT,
+                     color=python.Parameter.OTHER_ARGUMENT):
+        """
+        Return a shallow copy of self. The type of object returned
+        is the same as the type of self. If x, y, or color is passed, 
+        set the x, y, or color in the copy.
+        """
+
+        if (x is python.Parameter.OTHER_ARGUMENT):
+            x = self.x
+        if (y is python.Parameter.OTHER_ARGUMENT):
+            y = self.y
+        if (color is python.Parameter.OTHER_ARGUMENT):
+            color = self.color
+
+        return self.__class__(x, y, color)
+
+    """
+    deep_copy is the same as shallow_copy because x and y are numbers,
+    so they don't need to be deep copied. Color doesn't have a representation
+    yet but it can be a string. This is an example class so it isn't meant
+    to be used.
+    """
+    deep_copy = shallow_copy
+
+    def __eq__(self, other):
+        """
+        Return True if self is equal to other.
+        """
+
+        return isinstance(other, Abstract_Colored_Point) and \
+               other._can_equal(self) and \
+               self._attributes_equal(other)
+
+    def _can_equal(self, other):
+        """
+        Return True if other can be equal to self.
+        """
+
+        return isinstance(other, Abstract_Colored_Point)
+
+    def _attributes_equal(self, other):
+        """
+        Return True if all attributes of self and other are equal.
+        """
+
+        return super()._attributes_equal(other) and (self.color == other.color)
+
+    def __repr__(self):
+        return "{}(x={!r}, y={!r}, color={!r})".format(self.__class__.__name__,
+                                                 self.x,
+                                                 self.y,
+                                                 self.color)
+
+class Frozen_Colored_Point(Abstract_Colored_Point, Frozen_Point):
+    """
+    An Abstract_Colored_Point that is frozen.
+    """
+
+    def __hash__(self):
+        """
+        Return self's hash.
+
+        Hashable because immutable.
+        """
+
+        return hash((self.x, self.y, self.color))
+
+class Mutable_Point(Abstract_Point):
+    """
+    A Mutable Abstract_Poin. This class is mutable and subclasses
+    should be mutable.
+    """
+
+    def __setattr__(self, name, value):
+        """
+        Can set attributes because mutable.
+        """
+
+        object.__setattr__(self, name, value)
+
+    def __delattr__(self, name):
+        """
+        Can delete attributes because mutable.
+        """
+
+        object.__delattr__(self, name)
+
+    def __iadd__(self, other):
+        """
+        Add other to self. Works like vector addition.
+        """
+
+        self.x += other.x
+        self.y += other.y
+        return self
+
+    def __isub__(self, other):
+        """
+        Subtract other from self.
+        """
+
+        self.x -= other.x
+        self.y -= other.y
+        return self
+
+    def __imul__(self, other):
+        """
+        DotA multiply self by other. If other is a scalar,
+        multiply x and y of self by other.
+        """
+
+        if (hasattr(other, "x") and hasattr(other, "y")):
+            self.x *= other.x
+            self.y *= other.y
+        else:
+            self.x *= other
+            self.y *= other
+        return self
+
+    def __itruediv__(self, other):
+        """
+        Dot truediv self by other. If other is a scalar,
+        truediv x and y of self by other.
+        """
+
+        if (hasattr(other, "x") and hasattr(other, "y")):
+            self.x /= other.x
+            self.y /= other.y
+        else:
+            self.x /= other
+            self.y /= other
+        return self
+
+    def __ifloordiv__(self, other):
+        """
+        Dot floordiv self by other. If other is a scalar,
+        floordiv x and y of self by other.
+        """
+
+        if (hasattr(other, "x") and hasattr(other, "y")):
+            self.x //= other.x
+            self.y //= other.y
+        else:
+            self.x //= other
+            self.y //= other
+        return self
+
+class Mutable_Colored_Point(Abstract_Colored_Point, Mutable_Point):
+    """
+    """
+
+    pass
+
+class Rectangle:
+    """
+    An x-y aligned rectangle on the Cartesian coordinates.
+    """
+
+    def __init__(self, lower_left_point, width, height):
+        """
+        Create a Rectangle with a lower-left point and a width (x-axis)
+        and height (y-axis). Width and height must be >= 0
+        """
+
+        self.lower_left_point = lower_left_point
+        self.width = width
+        self.height = height
+
+    @property
+    def width(self):
+        return self._width
+
+    @width.setter
+    def width(self, value):
+        if (value < 0):
+            raise ValueError("width must be >= 0")
+        else:
+            self._width = value
+
+    @property
+    def height(self):
+        return self._height
+
+    @height.setter
+    def height(self, value):
+        if (value < 0):
+            raise ValueError("height must be >= 0")
+        else:
+            self._height = value
+
+    @classmethod
+    def create_from_lower_left(cls, lower_left_point, width, height):
+        """
+        Create a Rectangle from the lower-left point.
+        """
+
+        return cls(lower_left_point, width, height)
+
+    @classmethod
+    def create_from_upper_right(cls, upper_right_point, width, height):
+        """
+        Create a Rectangle from the upper-right point.
+        """
+
+        lower_left_point = upper_right_point - Frozen_Point(width, height)
+        return cls(lower_left_point, width, height)
+
+    @classmethod
+    def create_from_upper_left(cls, upper_left_point, width, height):
+        """
+        Create a Rectangle from the upper-left point.
+        """
+
+        lower_left_point = upper_left_point - Frozen_Point(0, height)
+        return cls(lower_left_point, width, height)
+
+    @classmethod
+    def create_from_lower_right(cls, lower_right_point, width, height):
+        """
+        Create a Rectangle from the lower-right point.
+        """
+
+        lower_left_point = lower_right_point - Frozen_Point(width, 0)
+        return cls(lower_left_point, width, height)
+
+    @classmethod
+    def create_from_points(cls, point0, point1):
+        """
+        Create a Rectangle starting from point0 to point1. The
+        Rectangle created will contain these two points on opposite
+        corners.
+        """
+
+        vector = point1 - point0
+        width, height = abs(vector)
+
+        vector_region = vector.region
+        lower_left_create_regions = (Point.Region.ORIGIN,
+                                     Point.Region.POSITIVE_X,
+                                     Point.Region.POSITIVE_Y,
+                                     Point.Region.QUADRANT1)
+        lower_right_create_regions = (Point.Region.QUADRANT2,
+                                      Point.Region.NEGATIVE_X)
+        upper_right_create_regions = (Point.Region.QUADRANT3,
+                                      Point.Region.NEGATIVE_Y)
+        if (vector_region in lower_left_create_regions): 
+            return cls.create_from_lower_left(point0, width, height)
+        elif (vector_region in lower_right_create_regions):
+            return cls.create_from_lower_right(point0, width, height)
+        elif (vector_region in upper_right_create_regions):
+            return cls.create_from_upper_right(point0, width, height)
+        else: # (vector_region in Point.Region.QUADRANT4)
+            return cls.create_from_upper_left(point0, width, height)
+
+    @property
+    def upper_right_point(self):
+        """
+        Return the upper-right point.
+        """
+
+        return self.lower_left_point + Frozen_Point(self.width, self.height)
+
+    @property
+    def upper_left_point(self):
+        """
+        Return the upper-left point.
+        """
+
+        return self.lower_left_point + Frozen_Point(0, self.height)
+
+    @property
+    def lower_right_point(self):
+        """
+        Return the lower-right point.
+        """
+
+        return self.lower_left_point + Frozen_Point(self.width, 0)
+
+    def intersects(self, rectangle):
+        """
+        Return True if self intersects with rectangle. This also considers
+        the rectangles intersecting if they touch by a line or a point
+        (0 area).
+
+        This is explained easier with a diagram. I will only show the x-axis.
+        The same applies to the y axis.
+
+        The line segments below represent the rectangles projected on the
+        x-axis. x0 is the x of the lower-left point, and x1 is the x of the
+        upper-right point.
+        Here are the possible cases for an intersection.
+
+        Case 1, rectangle right of self:
+        self:
+        -------
+        x0    x1
+
+        rectangle:
+             -----
+             x0  x1
+
+        Case 2, rectangle on top of self:
+        self:
+        -------
+        x0    x1
+
+        rectangle:
+         -----
+         x0  x1
+
+        Case 3, rectangle left of self:
+        self:
+           -------
+           x0    x1
+
+        rectangle:
+        -----
+        x0  x1
+
+        In all three cases, you see that self_x1 >= rectangle_x0 and
+        rectangle_x1 >= self_x0
+        These inequalities are symmetrical in that x1 >= x0. This shows
+        that you can swap self and rectangle and the function still works.
+        """
+
+        self_p0 = self.lower_left_point
+        self_p1 = self.upper_right_point
+        rect_p0 = rectangle.lower_left_point
+        rect_p1 = rectangle.upper_right_point
+
+        return (self_p1.x >= rect_p0.x) and (rect_p1.x >= self_p0.x) and \
+               (self_p1.y >= rect_p0.y) and (rect_p1.y >= self_p0.y)
+
+    def intersection(self, rectangle):
+        """
+        Return the Rectangle formed from the intersection of self and
+        rectangle. If there is no intersection, return None.
+
+        The 0 and 1 suffix stands for the lower-left and upper-right points
+        respectively.
+        The reason we take the max for x0 and y0 and the min for
+        x1 and y1 is described below.
+        I will only describe it for the x. The same method can be
+        applied for y.
+        First we project the rectangle on the x-axis:
+        self:
+        -------
+        x0    x1
+
+        rectangle:
+             -----
+             x0  x1
+        The intersection is to the right of x0, so we choose the max x0 as
+        the intersection Rectangle's x0.
+        The intersection is the left of x1, so we choose the min x1 as
+        the intersection Rectangle's x1.
+        """
+
+        if (self.intersects(rectangle)):
+            self_p0 = self.lower_left_point
+            self_p1 = self.upper_right_point
+            rect_p0 = rectangle.lower_left_point
+            rect_p1 = rectangle.upper_right_point
+
+            x = max(self_p0.x, rect_p0.x)
+            y = max(self_p0.y, rect_p0.y)
+            x1 = min(self_p1.x, rect_p1.x)
+            y1 = min(self_p1.y, rect_p1.y)
+            width = x1 - x
+            height = y1 - y
+            return Rectangle(Frozen_Point(x, y), width, height)
+        return None
+
+    def __eq__(self, other):
+        """
+        Return True if self is equal to other.
+        """
+
+        return isinstance(other, Rectangle) and \
+               other._can_equal(self) and \
+               self._attributes_equal(other)
+
+    def _can_equal(self, other):
+        """
+        Return True if other can be equal to self.
+        """
+
+        return isinstance(other, Rectangle)
+
+    def _attributes_equal(self, other):
+        """
+        Return True if all attributes of self and other are equal.
+        """
+
+        return (self.lower_left_point == other.lower_left_point) and \
+               (self.width == other.width) and \
+               (self.height == other.height)
+
+    def __repr__(self):
+        repr_string = "{}(lower_left_point={!r}, width={!r}, height={!r})"
+        return repr_string.format(self.__class__.__name__,
+                                                 self.lower_left_point,
+                                                 self.width,
+                                                 self.height)
