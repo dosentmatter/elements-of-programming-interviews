@@ -969,7 +969,7 @@ class P11_GeneratePrimes:
 
         return list(cls.generate_primes(n))
 
-class P12_RectanglesIntersect:
+class P12_XyRectanglesIntersect:
     """
     Let R and S be xy-aligned rectangles in the Cartesian plane. Write a
     function which tests if R and S have nonempty intersection. If the
@@ -1009,3 +1009,10 @@ class P12_1_IsRectangle:
         """
 
         return mathextra.Rectangle.is_rectangle(points)
+
+class P12_2_RectanglesIntersect:
+    """
+    Check if two rectangles, not necessarily xy-aligned intersect.
+    """
+
+    pass

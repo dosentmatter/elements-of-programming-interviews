@@ -491,10 +491,10 @@ class P11_GeneratePrimes_Test(unittest.TestCase):
             self.assertEqual(
                 generate_primes_list(self.MAX_NUMBERS[i]), self.PRIMES_LIST[i])
 
-class P12_RectanglesIntersect_Test(unittest.TestCase):
+class P12_XyRectanglesIntersect_Test(unittest.TestCase):
 
     def setUp(self):
-        self.cls = P12_RectanglesIntersect
+        self.cls = P12_XyRectanglesIntersect
 
         Rectangle = mathextra.Rectangle
         Frozen_Point = mathextra.Frozen_Point
