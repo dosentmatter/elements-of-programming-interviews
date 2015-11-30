@@ -322,8 +322,9 @@ class Abstract_Point(metaclass=ABCMeta):
 
     def __mul__(self, other):
         """
-        Dot multiply self by other and return. If other is a scalar,
-        multiply x and y of self by other.
+        Multiply self by other and return. If other is a scalar,
+        multiply x and y of self by other. If other is an Abstract_Point,
+        multiply x and y of self by x and y of other respectively.
         """
 
         if (hasattr(other, "x") and hasattr(other, "y")):
@@ -343,8 +344,9 @@ class Abstract_Point(metaclass=ABCMeta):
 
     def __truediv__(self, other):
         """
-        Dot truediv self by other and return. If other is a scalar,
-        truediv x and y of self by other.
+        Truediv self by other and return. If other is a scalar,
+        truediv x and y of self by other. If other is an Abstract_Point,
+        truediv x and y of self by x and y of other respectively.
         """
 
         if (hasattr(other, "x") and hasattr(other, "y")):
@@ -357,8 +359,9 @@ class Abstract_Point(metaclass=ABCMeta):
 
     def __floordiv__(self, other):
         """
-        Dot floordiv self by other and return. If other is a scalar,
-        floordiv x and y of self by other.
+        Floordiv self by other and return. If other is a scalar,
+        floordiv x and y of self by other. If other is an Abstract_Point,
+        floordiv x and y of self by x and y of other respectively.
         """
 
         if (hasattr(other, "x") and hasattr(other, "y")):
@@ -433,6 +436,34 @@ class Abstract_Point(metaclass=ABCMeta):
         """
 
         return math.sqrt(self.x**2 + self.y**2)
+
+    def dot(self, other):
+        """
+        Return the dot product of self and other.
+        """
+
+        return (self.x * other.x) + (self.y * other.y)
+
+    def is_close(self, other):
+        """
+        Return True if the two Abstract_Points are approximately
+        equal to eachother.
+        """
+
+        return isinstance(other, Abstract_Point) and other._can_equal(self) and \
+               self._attributes_close(other)
+
+    def _attributes_close(self, other):
+        return math.isclose(self.x, other.x) and \
+               math.isclose(self.y, other.y)
+
+    def is_orthogonal(self, other):
+        """
+        Return True if self is orthogonal to other.
+        """
+
+        check_value = self.dot(other)
+        return (check_value == 0) or math.isclose(check_value, 0)
 
     def __repr__(self):
         """
@@ -666,8 +697,9 @@ class Mutable_Point(Abstract_Point):
 
     def __imul__(self, other):
         """
-        DotA multiply self by other. If other is a scalar,
-        multiply x and y of self by other.
+        Multiply self by other. If other is a scalar,
+        multiply x and y of self by other. If other is an Abstract_Point,
+        multiply x and y of self by x and y of other respectively.
         """
 
         if (hasattr(other, "x") and hasattr(other, "y")):
@@ -680,8 +712,9 @@ class Mutable_Point(Abstract_Point):
 
     def __itruediv__(self, other):
         """
-        Dot truediv self by other. If other is a scalar,
-        truediv x and y of self by other.
+        Truediv self by other. If other is a scalar,
+        truediv x and y of self by other. If other is an Abstract_Point,
+        truediv x and y of self by x and y of other respectively.
         """
 
         if (hasattr(other, "x") and hasattr(other, "y")):
@@ -694,8 +727,9 @@ class Mutable_Point(Abstract_Point):
 
     def __ifloordiv__(self, other):
         """
-        Dot floordiv self by other. If other is a scalar,
-        floordiv x and y of self by other.
+        Floordiv self by other. If other is a scalar,
+        floordiv x and y of self by other. If other is an Abstract_Point,
+        floordiv x and y of self by x and y of other respectively.
         """
 
         if (hasattr(other, "x") and hasattr(other, "y")):
@@ -837,6 +871,16 @@ class Rectangle:
 
         return self.lower_left_point + Frozen_Point(self.width, 0)
 
+    @property
+    def points(self):
+        """
+        Return a tuple of self's points from lower-left counter-clockwise
+        ie. lower-left, lower-right, upper-right, upper-left.
+        """
+
+        return self.lower_left_point, self.lower_right_point, \
+               self.upper_right_point, self.upper_left_point
+
     def intersects(self, rectangle):
         """
         Return True if self intersects with rectangle. This also considers
@@ -963,3 +1007,124 @@ class Rectangle:
                                                  self.lower_left_point,
                                                  self.width,
                                                  self.height)
+
+    @staticmethod
+    def is_rectangle(points):
+        """
+        Return True if points are vertices of a rectangle.
+        points should be a collection of 4 points. Does not have to be
+        xy-aligned.
+
+        This works by checking if any of orderings of points form a
+        rectangle in that order. Only 3 orderings are checked because
+        the others are repeats.
+
+        For example, the rectangle below can be given in the orders
+        Counter-clockwise: ABCD, BCDA, CDAB, DABC
+        Clockwise: ADCB, DCBA, CBAD, BADC
+        D_____C
+        |     |
+        |_____|
+        A     B
+        
+        Another shape is
+        Direction0: ADBC, DBCA, BCAD, CADB
+        Direction1: ACBD, CBDA, BDAC, DACB
+        D  C
+        |\/|
+        |/\|
+        A  B
+
+        The last shape is
+        Direction0: ACDB, CDBA, DBAC, BACD
+        Direction1: ABDC, BDCA, DCAB, CABD
+        D____C
+         \  /
+          \/
+          /\
+         /__\
+        A    B
+
+        Given 4 points that form a rectangle, the ordering of the points
+        will be one of the three shapes. Each shape has 8 orderings so
+        we only need one for each shape. Only one of the shapes is a
+        rectangle.
+        """
+
+        length = len(points)
+        if (length != 4):
+            error_message = "is_rectangle expected 4 " \
+                            "arguments, got {}".format(length)
+            raise TypeError(error_message)
+
+        return Rectangle.is_rectangle_ordered(points) or \
+               Rectangle.is_rectangle_ordered(
+                       (points[0], points[2], points[3], points[1])) or \
+               Rectangle.is_rectangle_ordered(
+                       (points[0], points[3], points[1], points[2]))
+
+    @staticmethod
+    def is_rectangle_ordered(points):
+        """
+        Return True if points are vertices of a rectangle.
+        points should be a collection of 4 points that are ordered
+        either clockwise or counter-clockwise. Does not have to be
+        xy-aligned.
+
+        For example, the rectangle below can be given in the orders
+        Counter-clockwise: ABCD, BCDA, CDAB, DABC
+        Clockwise: ADCB, DCBA, CBAD, BADC
+        D_____C
+        |     |
+        |_____|
+        A     B
+
+        This works by checking that points form a parallelogram and
+        contains a right angle (checks the angle at the 0th point).
+        """
+
+        length = len(points)
+        if (length != 4):
+            error_message = "is_rectangle_ordered expected 4 " \
+                            "arguments, got {}".format(length)
+            raise TypeError(error_message)
+
+        answer = False
+        if (Rectangle.is_parallelogram_ordered(points)):
+            vector_01 = points[1] - points[0]
+            vector_03 = points[3] - points[0]
+            answer = vector_01.is_orthogonal(vector_03)
+        return answer
+
+    @staticmethod
+    def is_parallelogram_ordered(points):
+        """
+        Return True if points are vertices of a parallelogram.
+        points should be a collection of 4 points that are ordered
+        either clockwise or counter-clockwise.
+
+        For example, the parallelogram below can be given in the orders
+        Counter-clockwise: ABCD, BCDA, CDAB, DABC
+        Clockwise: ADCB, DCBA, CBAD, BADC
+          D_____C
+          /    /
+         /____/
+        A     B
+
+        This works by checking that the vectors on opposite sides are
+        equal starting from the 0th point. This is a parallelogram
+        because equal vectors are parallel and have the same magnitude.
+        A quadrilateral is a parallelogram iff one pair of opposite sides
+        are parallel and equal in length.
+        """
+
+        length = len(points)
+        if (length != 4):
+            error_message = "is_parallelogram_ordered expected 4 " \
+                            "arguments, got {}".format(length)
+            raise TypeError(error_message)
+
+        vector_01 = points[1] - points[0]
+        vector_32 = points[2] - points[3]
+
+        return (vector_01 == vector_32) or vector_01.is_close(vector_32)

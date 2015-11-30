@@ -995,3 +995,17 @@ class P12_RectanglesIntersect:
         """
 
         return R.intersection(S)
+
+class P12_1_IsRectangle:
+    """
+    Given four points in the plane, check if they are vertices of a
+    rectangle (includes xy-aligned).
+    """
+
+    @staticmethod
+    def is_rectangle(points):
+        """
+        Return True if points[0-3] are vertices of a rectangle.
+        """
+
+        return mathextra.Rectangle.is_rectangle(points)

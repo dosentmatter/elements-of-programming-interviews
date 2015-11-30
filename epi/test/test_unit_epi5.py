@@ -1,7 +1,7 @@
 import unittest
 from epi.epi5 import *
 from epi.util import bitmanip, mathextra
-import random
+import random, math
 
 class P1_Parity_Test(unittest.TestCase):
 
@@ -650,6 +650,73 @@ class P12_RectanglesIntersect_Test(unittest.TestCase):
                                           rectangle) is None \
                              for rectangle in self.NON_INTERSECT_RECTANGLES)
         self.assertTrue(none_intersect)
+
+class P12_1_IsRectangle_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P12_1_IsRectangle
+
+        self.RECTANGLES = []
+
+        Rectangle = mathextra.Rectangle
+        Frozen_Point = mathextra.Frozen_Point
+
+        point = Frozen_Point(0, 0)
+        rectangle = Rectangle.create_from_lower_left(point, 3, 3)
+        self.RECTANGLES.append(rectangle.points)
+
+        point = Frozen_Point(0, 0)
+        rectangle = Rectangle.create_from_lower_left(point, 0, 0)
+        self.RECTANGLES.append(rectangle.points)
+
+        point = Frozen_Point(1, 0)
+        rectangle = Rectangle.create_from_lower_left(point, 3, 3)
+        self.RECTANGLES.append(rectangle.points)
+
+        point = Frozen_Point(1, 1)
+        rectangle = Rectangle.create_from_upper_left(point, 3, 3)
+        self.RECTANGLES.append(rectangle.points)
+
+        point = Frozen_Point(-1, 1)
+        rectangle = Rectangle.create_from_upper_right(point, 3, 3)
+        self.RECTANGLES.append(rectangle.points)
+
+        point = Frozen_Point(-1.2, 1.5)
+        rectangle = Rectangle.create_from_upper_right(point, 6.7, 8.1)
+        self.RECTANGLES.append(rectangle.points)
+
+
+        p = mathextra.Frozen_Point
+
+        self.RECTANGLES.append((p(0, 0), p(1, 1), p(-1, 1), p(0, 2)))
+
+        angle = 25 * math.pi / 180
+
+        self.RECTANGLES.append((p(0, 0),
+                                p(math.cos(angle), math.sin(angle)),
+                                p(-math.sin(angle), math.cos(angle)),
+                                p(math.cos(angle) - math.sin(angle),
+                                  math.sin(angle) + math.cos(angle))))
+
+        self.NON_RECTANGLES = []
+
+        self.NON_RECTANGLES.append((p(0, 0), p(1, 2), p(3, 2), p(8, 9)))
+        self.NON_RECTANGLES.append((p(0, 0), p(0, 0), p(0, 0), p(1, 0)))
+        self.NON_RECTANGLES.append((p(1, 0), p(0, 0), p(0, 0), p(0, 0)))
+        self.NON_RECTANGLES.append((p(0, 0), p(0, 1), p(1, 0), p(1, 0)))
+        self.NON_RECTANGLES.append((p(1, 0), p(0, 1), p(0, 0), p(2, 2)))
+        self.NON_RECTANGLES.append((p(1, 0), p(0, 1), p(0, 0), p(1.01, 1.01)))
+
+    def test_is_rectangle(self):
+        is_rectangle = self.cls.is_rectangle
+
+        all_are_rectangles = all(is_rectangle(points)
+                                 for points in self.RECTANGLES)
+        self.assertTrue(all_are_rectangles)
+
+        none_are_rectangles = all(not is_rectangle(points)
+                                  for points in self.NON_RECTANGLES)
+        self.assertTrue(none_are_rectangles)
 
 def main():
     unittest.main()
