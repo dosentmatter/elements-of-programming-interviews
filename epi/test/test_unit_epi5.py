@@ -710,11 +710,11 @@ class P12_1_IsRectangle_Test(unittest.TestCase):
     def test_is_rectangle(self):
         is_rectangle = self.cls.is_rectangle
 
-        all_are_rectangles = all(is_rectangle(points)
+        all_are_rectangles = all(is_rectangle(*points)
                                  for points in self.RECTANGLES)
         self.assertTrue(all_are_rectangles)
 
-        none_are_rectangles = all(not is_rectangle(points)
+        none_are_rectangles = all(not is_rectangle(*points)
                                   for points in self.NON_RECTANGLES)
         self.assertTrue(none_are_rectangles)
 

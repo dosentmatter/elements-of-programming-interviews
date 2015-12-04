@@ -1003,16 +1003,27 @@ class P12_1_IsRectangle:
     """
 
     @staticmethod
-    def is_rectangle(points):
+    def is_rectangle(point0, point1, point2, point3):
         """
         Return True if points[0-3] are vertices of a rectangle.
         """
 
-        return mathextra.Rectangle.is_rectangle(points)
+        return mathextra.Rectangle.is_rectangle(point0,
+                                                point1,
+                                                point2,
+                                                point3)
 
 class P12_2_RectanglesIntersect:
     """
     Check if two rectangles, not necessarily xy-aligned intersect.
     """
 
-    pass
+    @staticmethod
+    def intersects(R, S):
+        """
+        Can use a method to check if two polygons intersect. There
+        exists many algorithms. Maybe check if there exists points
+        of one polygon that is contained by the other polygon.
+        """
+
+        return

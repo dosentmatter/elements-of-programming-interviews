@@ -1009,13 +1009,12 @@ class Rectangle:
                                                  self.height)
 
     @staticmethod
-    def is_rectangle(points):
+    def is_rectangle(point0, point1, point2, point3):
         """
-        Return True if points are vertices of a rectangle.
-        points should be a collection of 4 points. Does not have to be
-        xy-aligned.
+        Return True if point[0-3] are vertices of a rectangle.
+        point[0-3] do not have to be xy-aligned.
 
-        This works by checking if any of orderings of points form a
+        This works by checking if any of orderings of point[0-3] form a
         rectangle in that order. Only 3 orderings are checked because
         the others are repeats.
 
@@ -1051,25 +1050,19 @@ class Rectangle:
         rectangle.
         """
 
-        length = len(points)
-        if (length != 4):
-            error_message = "is_rectangle expected 4 " \
-                            "arguments, got {}".format(length)
-            raise TypeError(error_message)
-
-        return Rectangle.is_rectangle_ordered(points) or \
+        return Rectangle.is_rectangle_ordered(
+                        point0, point1, point2, point3) or \
                Rectangle.is_rectangle_ordered(
-                       (points[0], points[2], points[3], points[1])) or \
+                       point0, point2, point3, point1) or \
                Rectangle.is_rectangle_ordered(
-                       (points[0], points[3], points[1], points[2]))
+                       point0, point3, point1, point2)
 
     @staticmethod
-    def is_rectangle_ordered(points):
+    def is_rectangle_ordered(point0, point1, point2, point3):
         """
-        Return True if points are vertices of a rectangle.
-        points should be a collection of 4 points that are ordered
-        either clockwise or counter-clockwise. Does not have to be
-        xy-aligned.
+        Return True if point[0-3] are vertices of a rectangle.
+        point[0-3] should be ordered either clockwise or
+        counter-clockwise. They do not have to be xy-aligned.
 
         For example, the rectangle below can be given in the orders
         Counter-clockwise: ABCD, BCDA, CDAB, DABC
@@ -1079,29 +1072,22 @@ class Rectangle:
         |_____|
         A     B
 
-        This works by checking that points form a parallelogram and
-        contains a right angle (checks the angle at the 0th point).
+        This works by checking that point[0-3] form a parallelogram and
+        contains a right angle (checks angle point1-point0-point3).
         """
 
-        length = len(points)
-        if (length != 4):
-            error_message = "is_rectangle_ordered expected 4 " \
-                            "arguments, got {}".format(length)
-            raise TypeError(error_message)
-
         answer = False
-        if (Rectangle.is_parallelogram_ordered(points)):
-            vector_01 = points[1] - points[0]
-            vector_03 = points[3] - points[0]
+        if (Rectangle.is_parallelogram_ordered(point0, point1, point2, point3)):
+            vector_01 = point1 - point0
+            vector_03 = point3 - point0
             answer = vector_01.is_orthogonal(vector_03)
         return answer
 
     @staticmethod
-    def is_parallelogram_ordered(points):
+    def is_parallelogram_ordered(point0, point1, point2, point3):
         """
-        Return True if points are vertices of a parallelogram.
-        points should be a collection of 4 points that are ordered
-        either clockwise or counter-clockwise.
+        Return True if point[0-3] are vertices of a parallelogram.
+        point[0-3] should be ordered either clockwise or counter-clockwise.
 
         For example, the parallelogram below can be given in the orders
         Counter-clockwise: ABCD, BCDA, CDAB, DABC
@@ -1112,19 +1098,13 @@ class Rectangle:
         A     B
 
         This works by checking that the vectors on opposite sides are
-        equal starting from the 0th point. This is a parallelogram
+        equal starting from point0. This is a parallelogram
         because equal vectors are parallel and have the same magnitude.
         A quadrilateral is a parallelogram iff one pair of opposite sides
         are parallel and equal in length.
         """
 
-        length = len(points)
-        if (length != 4):
-            error_message = "is_parallelogram_ordered expected 4 " \
-                            "arguments, got {}".format(length)
-            raise TypeError(error_message)
-
-        vector_01 = points[1] - points[0]
-        vector_32 = points[2] - points[3]
+        vector_01 = point1 - point0
+        vector_32 = point2 - point3
 
         return (vector_01 == vector_32) or vector_01.is_close(vector_32)
