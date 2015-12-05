@@ -578,6 +578,10 @@ def bit_array_select(L, bit_array, log2):
 def majority_bitwise(*bit_arrays):
     """
     Return the bitwise majority of bit_arrays.
+
+    This works by checking all possible combinations of
+    bit_arrays of minimum size possible to be a majority
+    and checks if they are a majority.
     """
 
     if (len(bit_arrays) == 0):
@@ -599,6 +603,11 @@ def majority_logical(*bit_arrays):
     answer as majority_bitwise() but with short circuiting
     if the integers with 1 bit set have it set at the same
     index.
+
+    This works by checking all possible combinations of
+    bit_arrays of minimum size possible to be a majority
+    and checks if they are a majority. However, it
+    short circuits if a logical majority is found.
     """
 
     if (len(bit_arrays) == 0):
@@ -615,6 +624,12 @@ def add_bitwise(x, y):
     """
     Return the sum of x and y (unsigned) using only assignment,
     bitwise operators, loops, and conditionals.
+
+    This works by doing a ripple addition (grade-school algorithm)
+    on each bit. x | y is used as the iterations_tracker so all
+    the bits get added. If there is a carry_in at the end,
+    the answer gets a 1 at the carry_in. This is because x + y
+    can be a digit greater than the maximum number of digits in x and y.
     """
 
     answer = 0
@@ -643,7 +658,18 @@ def multiply_bitwise(x, y):
     """
     Return the product of x and y (unsigned) using only assignment,
     bitwise operators, loops, and conditionals.
+
+    This multiplies x by y by adding shifted copies of x
+    (grade-school algorithm). if x < y, they are swapped to make
+    x >= y always True. This is because y is used for the number
+    of iterations (which is related to the number of additions)
+    so a smaller number has less bits so it has less iterations
+    (but the number of additions depend on the number of high bits).
+    If y has a high bit, it adds a shifted x to answer.
     """
+
+    if (x < y):
+        x, y = y, x
 
     answer = 0
     k = 1
