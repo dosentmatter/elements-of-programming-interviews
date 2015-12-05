@@ -485,17 +485,19 @@ def log2(x):
     59 == 0b11 1011    # binary
 
     The highest amount x can be rightshifted by a multiple of 2 is 32.
-    x >> = 32
+    x >>= 32
     x == 1 << 27
     27 == 0b01 1011
 
     Now, the highest x can be rightshifted by is 16 == 32 >> 1.
-    x >> 16
+    x >>= 16
     x == 1 << 11
     11 == 0b00 1011
 
     Keep going, and x can still be shifted by 8, 2, and 1. At this point,
+    x >>= (8 + 2 + 1)
     x == 1 << 0 == 1.
+    0 == 0b00 0000
 
     The answer will be the sum of the shifts: 32 + 16 + 8 + 2 + 1 == 59.
     """
