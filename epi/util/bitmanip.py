@@ -1,4 +1,5 @@
 from epi.util import python
+import itertools, functools, operator
 
 def ones(n, offset=0):
     """
@@ -564,6 +565,7 @@ def log2_python(x):
 def bit_array_select(L, bit_array, log2):
     """
     Return a frozenset that contains L[k] iff get_bit(bit_array, k) == 1.
+    log2 is a function that returns the log2 of a number.
     """
 
     S = set()
@@ -572,3 +574,89 @@ def bit_array_select(L, bit_array, log2):
         bit_array = drop_lowest_set_bit(bit_array)
         S.add(L[i])
     return frozenset(S)
+
+def majority_bitwise(*bit_arrays):
+    """
+    Return the bitwise majority of bit_arrays.
+    """
+
+    if (len(bit_arrays) == 0):
+        raise TypeError("len(bit_arrays) must be > 0.")
+
+    MINIMUM_MAJORITY = (len(bit_arrays) // 2) + 1
+
+    answer = 0
+    for bit_array_subset in \
+            itertools.combinations(bit_arrays, MINIMUM_MAJORITY):
+        answer |= functools.reduce(operator.and_, bit_array_subset)
+
+    return answer
+
+def majority_logical(*bit_arrays):
+    """
+    Return the logical majority of bit_arrays. Can be used on
+    booleans or integers with 1 or 0 bits set. Gives the same
+    answer as majority_bitwise() but with short circuiting
+    if the integers with 1 bit set have it set at the same
+    index.
+    """
+
+    if (len(bit_arrays) == 0):
+        raise TypeError("len(bit_arrays) must be > 0.")
+
+    MINIMUM_MAJORITY = (len(bit_arrays) // 2) + 1
+
+    answer = itertools.combinations(bit_arrays, MINIMUM_MAJORITY)
+    answer = map(all, answer)
+    answer = any(answer)
+    return answer
+
+def add_bitwise(x, y):
+    """
+    Return the sum of x and y (unsigned) using only assignment,
+    bitwise operators, loops, and conditionals.
+    """
+
+    answer = 0
+    carry_in = 0
+    k = 1
+    iterations_tracker = x | y
+
+    while (iterations_tracker):
+        x_k = x & k
+        y_k = y & k
+
+        answer |= x_k ^ y_k ^ carry_in
+        carry_out = majority_bitwise(x_k, y_k, carry_in)
+
+        carry_in = carry_out << 1
+
+        k <<= 1
+        iterations_tracker >>= 1
+
+    if (carry_in):
+        answer |= carry_in
+
+    return answer
+
+def multiply_bitwise(x, y):
+    """
+    Return the product of x and y (unsigned) using only assignment,
+    bitwise operators, loops, and conditionals.
+    """
+
+    answer = 0
+    k = 1
+    shifted_x = x
+
+    iterations_tracker = y
+
+    while (iterations_tracker):
+        if (y & k):
+            answer = add_bitwise(answer, shifted_x)
+
+        k <<= 1
+        shifted_x <<= 1
+        iterations_tracker >>= 1
+
+    return answer

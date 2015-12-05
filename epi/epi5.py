@@ -1027,3 +1027,18 @@ class P12_2_RectanglesIntersect:
         """
 
         return
+
+class P13_MultiplicationBitwise:
+    """
+    Multiply two unsigned integers using only assignment, bitwise
+    operators, loops, and conditionals.
+    """
+    
+    @staticmethod
+    def multiply_bitwise(x, y):
+        """
+        Return the product of x and y using only assignment, bitwise operators,
+        loops, and conditionals.
+        """
+
+        return bitmanip.multiply_bitwise(x, y)

@@ -718,6 +718,24 @@ class P12_1_IsRectangle_Test(unittest.TestCase):
                                   for points in self.NON_RECTANGLES)
         self.assertTrue(none_are_rectangles)
 
+class P13_MultiplicationBitwise_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P13_MultiplicationBitwise
+
+    def test_is_rectangle_rand(self):
+        multiply_bitwise = self.cls.multiply_bitwise
+
+        NUM_TESTS_RUN = 100
+        MAX_NUMBER = 1000000
+        for _ in range(NUM_TESTS_RUN):
+            random_x = random.randint(0, MAX_NUMBER)
+            random_y = random.randint(0, MAX_NUMBER)
+
+            product = random_x * random_y
+
+            self.assertEqual(multiply_bitwise(random_x, random_y), product)
+
 def main():
     unittest.main()
 
