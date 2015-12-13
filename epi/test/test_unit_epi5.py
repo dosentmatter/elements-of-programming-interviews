@@ -742,7 +742,6 @@ class P14_FloorDivision_Test(unittest.TestCase):
         self.cls = P14_FloorDivision
 
     def test_floordiv_bitwise_rand(self):
-        import pdb
         floordiv_bitwise = self.cls.floordiv_bitwise
 
         NUM_TESTS_RUN = 100
