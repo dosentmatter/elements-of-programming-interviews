@@ -736,6 +736,26 @@ class P13_MultiplicationBitwise_Test(unittest.TestCase):
 
             self.assertEqual(multiply_bitwise(random_x, random_y), product)
 
+class P14_FloorDivision_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P14_FloorDivision
+
+    def test_floordiv_bitwise_rand(self):
+        import pdb
+        floordiv_bitwise = self.cls.floordiv_bitwise
+
+        NUM_TESTS_RUN = 100
+        MAX_NUMBER = 1000000
+
+        for _ in range(NUM_TESTS_RUN):
+            random_x = random.randint(0, MAX_NUMBER)
+            random_y = random.randint(1, MAX_NUMBER)
+
+            quotient = random_x // random_y
+
+            self.assertEqual(floordiv_bitwise(random_x, random_y), quotient)
+
 def main():
     unittest.main()
 

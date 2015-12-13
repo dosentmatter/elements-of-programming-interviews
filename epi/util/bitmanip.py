@@ -500,12 +500,35 @@ def log2(x):
     0 == 0b00 0000
 
     The answer will be the sum of the shifts: 32 + 16 + 8 + 2 + 1 == 59.
+
+    highest_shift_amount starts at 1 because if it exits the loop
+    with a starting value of 0, the value would be -1 after exiting
+    the loop. This case just means that x can't be shifted at all
+    because it's already 0 which is an edge case handled in the beginning
+    if case.
+
+    Optimizations:
+
+    Add elif (x == 1): return 1 in the beginning if check to avoid going
+    through the loops for a simple case. This allows highest_shift_amount
+    to start at 2.
+
+    We know highest_shift_amount will be shiftable so we can skip the
+    second while loop's first iteration.
+    <<<<<<<
+    shift_amount = highest_shift_amount
+
+    answer = 0
+    =======
+    shift_amount = highest_shift_amount >> 1
+
+    answer = highest_shift_amount
+    x >>= highest_shift_amount
+    >>>>>>>
     """
 
     if (x == 0):
         return -float("inf")
-    elif (x == 1):
-        return 0
 
     highest_shift_amount = 1
     while (True):

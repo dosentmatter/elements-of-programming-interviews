@@ -1042,3 +1042,89 @@ class P13_MultiplicationBitwise:
         """
 
         return bitmanip.multiply_bitwise(x, y)
+
+class P14_FloorDivision:
+    """
+    Given two positive integers, compute x // y if the only operators you
+    can use are addition, subtraction, and multiplication.
+    """
+
+    @staticmethod
+    def floordiv_bitwise(x, y):
+        """
+        Return x // y (both positive integers) using only
+        addition, subtraction, multiplication, and bitwise operations.
+
+        This works by finding the highest 2**k * y (where k is a whole
+        number) to subtract from x multiple times until
+        x < y (the remainder). In effect, this is building a binary number
+        (0babcde) * y == x + remainder bit by bit. The answer would be
+        (0babcde) in decimal.
+        In the first loop, highest_power is found where
+        2**highest_power * y == y << highest_power can be subtracted
+        from x to keep x >= 0. This fails then backtracks.
+        In the second loop, all powers <= highest_power are checked to
+        see if y << power can be subtracted. If it can, 1 << power is
+        added to answer. In effect, this is creating answer by
+        (0ba0000) + (0b0b000) + (0b00c00) + (0b000d0) + (0b0000e)
+        But the terms are only added if they != 0.
+
+        I could've used a multiplier instead of power
+        multiplier * y
+        multiplier <<= 1
+        But the power avoids multiplication and makes this problem more
+        similar to bitmanip.log2
+        I could've also done (1 << power) * y or (2 ** power) * y
+        instead of y << power but this avoids multiplication.
+
+        highest_power starts at 1 because if it exits the loop
+        with a starting value of 0, the value would be -1 after exiting
+        the loop. This case just means that !(y << 0 <= x) => (y > x) which
+        is handled in the beginning if case.
+
+        Optmizations:
+
+        Add elif (x < (y << 1)): return 1 in the beginning if case to avoid
+        going through the loops for a simple case. This just means that
+        (2y > x >= y) since 2y == y << 1 and x < y is false since it is
+        checked in the first if clause. This allows highest_power to start at 2.
+
+
+        We know y << highest_power will be subtractable so we can skip the
+        second while loop's first iteration.
+        <<<<<<<
+        power = highest_power
+
+        answer = 0
+        =======
+        power = highest_power - 1
+
+        answer = 1 << highest_power
+        x -= y << highest_power
+        >>>>>>>
+        """
+
+        if (y == 0):
+            raise ZeroDivisionError("integer division by 0")
+
+        if (x < y):
+            return 0
+
+        highest_power = 1
+        while (True):
+            if ((y << highest_power) <= x):
+                highest_power += 1
+            else:
+                highest_power -= 1    # backtrack
+                break
+
+        power = highest_power
+
+        answer = 0
+        while (x >= y):
+            subtract_amount = y << power
+            if (x >= subtract_amount):
+                x -= subtract_amount
+                answer += 1 << power
+            power -= 1
+        return answer
