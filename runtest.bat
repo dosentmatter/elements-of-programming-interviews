@@ -5,12 +5,12 @@ for %%x in (%*) do set /A argC+=1
 if %argC% EQU 0 (
     python -m unittest discover -v
 ) else if  "%~1"=="unit" (
-    python -m unittest discover -v -p test_unit*.py
+    python -m unittest discover -v -p test_unit*%~2*.py
 ) else if "%~1"=="performance" (
-    python -m unittest discover -v -p test_performance*.py
+    python -m unittest discover -v -p test_performance*%~2*.py
 ) else (
     @echo on
-    echo Incorrect parameter "%~1". Usage: runtest.bat ^[unit^|performance^]
+    echo Incorrect parameter "%~1". Usage: runtest.bat [unit^|performance] [^<chapter^>]
     @echo off
 )
 
