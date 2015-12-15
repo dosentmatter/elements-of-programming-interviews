@@ -1,7 +1,7 @@
 import unittest
 from epi.epi5 import *
 import timeit
-from epi.util import timeitextra
+from epi.utils import timeitextra
 from math import factorial
 
 class P5_Powerset_Test(unittest.TestCase):

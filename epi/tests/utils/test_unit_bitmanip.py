@@ -1,5 +1,5 @@
 import unittest
-from epi.util.bitmanip import *
+from epi.utils.bitmanip import *
 
 class ones_Test(unittest.TestCase):
 

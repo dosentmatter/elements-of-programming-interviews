@@ -1,7 +1,7 @@
 import unittest
-from epi.util.mathextra import *
+from epi.utils.mathextra import *
 import timeit
-from epi.util import timeitextra
+from epi.utils import timeitextra
 
 class is_prime_Test(unittest.TestCase):
 

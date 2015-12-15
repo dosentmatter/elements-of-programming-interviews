@@ -1,6 +1,6 @@
 import unittest
 from epi.epi5 import *
-from epi.util import bitmanip, mathextra
+from epi.utils import bitmanip, mathextra
 import random, math
 
 class P1_Parity_Test(unittest.TestCase):

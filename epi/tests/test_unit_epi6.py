@@ -1,6 +1,6 @@
 import unittest
 from epi.epi6 import *
-from epi.util import randomextra
+from epi.utils import randomextra
 import random, operator, collections
 
 class P1_ThreeWayPartitioning_Test(unittest.TestCase):

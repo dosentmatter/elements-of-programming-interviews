@@ -1,6 +1,6 @@
 import fractions
 import math
-from epi.util import itertoolsextra, python
+from epi.utils import itertoolsextra, python
 from collections import namedtuple
 from enum import Enum
 from abc import ABCMeta, abstractmethod

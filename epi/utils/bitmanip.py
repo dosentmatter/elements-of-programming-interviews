@@ -1,4 +1,4 @@
-from epi.util import python
+from epi.utils import python
 import itertools, functools, operator
 
 def ones(n, offset=0):
