@@ -659,7 +659,7 @@ class Frozen_Colored_Point(Abstract_Colored_Point, Frozen_Point):
 
 class Mutable_Point(Abstract_Point):
     """
-    A Mutable Abstract_Poin. This class is mutable and subclasses
+    A Mutable Abstract_Point. This class is mutable and subclasses
     should be mutable.
     """
 
@@ -742,6 +742,7 @@ class Mutable_Point(Abstract_Point):
 
 class Mutable_Colored_Point(Abstract_Colored_Point, Mutable_Point):
     """
+    An Abstract_Colored_Point that is mutable.
     """
 
     pass
