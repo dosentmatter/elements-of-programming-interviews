@@ -24,14 +24,9 @@ class counting_sort_Test(unittest.TestCase):
 
             self.assertEqual(before_counter, after_counter)
 
-            done_values = set()
-            sorted_iter = iter(sorted_list)
-            previous_value = next(sorted_iter).value
-            for key in sorted_iter:
+            previous_value = -float("inf")
+            for key in sorted_list:
                 value = key.value
 
-                if (value != previous_value):
-                    self.assertNotIn(previous_value, done_values)
-                    done_values.add(previous_value)
-
-                    previous_value = value
+                self.assertLessEqual(previous_value, value)
+                previous_value = value
