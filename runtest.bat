@@ -10,7 +10,7 @@ if %argC% EQU 0 (
     python -m unittest discover -v -p test_performance*%~2*.py
 ) else (
     @echo on
-    echo Incorrect parameter "%~1". Usage: runtest.bat [unit^|performance] [^<chapter^>]
+    echo Incorrect parameter "%~1". Usage: runtest.bat [unit^|performance] [^<pattern^>]
     @echo off
 )
 
