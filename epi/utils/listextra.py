@@ -8,10 +8,10 @@ def extend_to_length(L, element, length):
 
 def counting_sort(L):
     """
-    Reorder L so that all objects of the same key appear in the same subarray.
-    The order of the subarrays is from keys with the lowest to highest
-    value. Keys can take on any number of values. The number of values will
-    be figured out.
+    Return a sorted list such that all objects in L of the same key appear
+    in the same subarray.  The order of the subarrays is from keys with
+    the lowest to highest value. Keys can take on any number of values.
+    The number of values will be figured out.
 
     This works by first counting the number of keys that take on a value.
     The counts list will be extended as we discover keys with higher
