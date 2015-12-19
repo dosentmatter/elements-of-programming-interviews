@@ -1,9 +1,11 @@
+from epi.utils import listextra
+
 class P1_ThreeWayPartitioning:
     """
     Write a function that takes a list L and an index i into L, and
     rearranges the elements such that elements less than L[i] appear
     first, followed by elements equal to L[i], followed by elements
-    greater than L[i]. Use O(1) space and O(|A|) time complexity.
+    greater than L[i]. Use O(1) space and O(|L|) time complexity.
     """
 
     @staticmethod
@@ -78,7 +80,7 @@ class P1_ThreeWayPartitioning:
                      |
                      |less_than_end == equals_start
 
-        In this case, we just increment unkown_start because everything
+        In this case, we just increment unknown_start because everything
         is already in the right place.
         Example:
         [0, 1, 2, 3, 7, 7, 7, X, X, 9, 10]
@@ -116,6 +118,9 @@ class P1_ThreeWayPartitioning:
         was increased.
         In effect, this adds to the greater than partition and rotates
         the unknown partition.
+
+        It is also possible to not swap the pivot with the 0th index element
+        at the start. Then unknown_start = 0 in the beginning instead of 1.
         """
 
         if (len(L) == 0):
@@ -143,3 +148,66 @@ class P1_ThreeWayPartitioning:
                 L[greater_than_end], L[unknown_start]
 
                 greater_than_end -= 1
+
+class P1_1_ThreeKeyPartitioning:
+    """
+    Keys take one of three values. Reorder L so that all objects of the
+    same key appear in the same subarray. The order of the subarrays is
+    not important. Use O(1) space and O(|L|) time complexity.
+    """
+
+    @staticmethod
+    def three_key_partition(L):
+        """
+        Reorder L so that all objects of the same key appear in the same
+        subarray. The order of the subarrays is the order that the key
+        values are seen. Use O(1) space and O(|L|) time complexity.
+        Keys take one of three values.
+
+        This works the same as three_way_partition() but the order is
+        [position_0, position_1, position_2]
+
+        When the loop is not finished, the order is
+        [position_0, position_1, unknown, position_2]
+
+        position_0, position_1, position_2 is the first seen, second seen,
+        and third seen key values respectively.
+        """
+
+        NUMBER_KEY_VALUES = 3
+
+        if (len(L) == 0):
+            return L
+
+        value_positions = {}
+        position = 0
+
+        position_0_end = 0 # = position_1_start
+        unknown_start = 0 # = position_1_end
+        position_2_end = len(L) - 1 # = unknown_last
+
+        while(unknown_start <= position_2_end):
+            value = L[unknown_start].value
+
+            if (value not in value_positions):
+                if (position < NUMBER_KEY_VALUES):
+                    value_positions[value] = position
+                    position += 1
+                else:
+                    error_message = \
+                      "L has more than {} key values.".format(NUMBER_KEY_VALUES)
+                    raise TypeError(error_message)
+
+            if (value_positions[value] == 0):
+                L[unknown_start], L[position_0_end] = \
+                L[position_0_end], L[unknown_start]
+
+                unknown_start += 1
+                position_0_end += 1
+            elif (value_positions[value] == 1):
+                unknown_start += 1
+            else: # value_positions[value] == 2
+                L[unknown_start], L[position_2_end] = \
+                L[position_2_end], L[unknown_start]
+
+                position_2_end -= 1
