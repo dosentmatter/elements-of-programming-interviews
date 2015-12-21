@@ -25,7 +25,26 @@ def counting_sort(L):
     time a key is put in place.
 
     Uses O(n + k) space and O(n + k) time where k is the number of values
-    for keys.
+    for keys. The largest key value determines k because the list will
+    be extended to this value.
+
+    If key value space is large and sparse, we can make counts a dictionary
+    instead. This would require sorting the dictionary by key after doing
+    the count (first loop). This would take j*log(j) time to sort, where
+    j is the number of values for keys that appear at least once in L.
+    j is a subset of k.
+    After sorting, the second loop would take j time because only the
+    elements that exist in the dictionary are looped over.
+    Using a list takes k time in the second loop because values with a count
+    of 0 are also looped over. The benefit is that a list doesn't require
+    a sort.
+
+    So in summary, a dict uses j*log(j) + j time to sort and do the second
+    loop. A list uses k time to do the second loop.
+
+    Since j is a subset of k, if k is large and not many values of k is used
+    in L (sparse), then j*log(j) + j < k. But if j is close to k,
+    j*log(j) + j > k.
     """
 
     counts = []
