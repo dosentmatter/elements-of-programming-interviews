@@ -127,3 +127,9 @@ class P1_2_FourKeyPartitioning_Test(unittest.TestCase):
                     done_values.add(previous_value)
 
                     previous_value = value
+
+def main():
+    unittest.main()
+
+if __name__ == '__main__':
+    main()
