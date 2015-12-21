@@ -227,14 +227,15 @@ class P1_2_FourKeyPartitioning:
         values are seen. Use O(1) space and O(|L|) time complexity.
         Keys take one of four values.
 
-        This works the same as three_way_partition() but the order is
+        This works the same as three_key_partition() but the order is
         [position_0, position_1, position_2, position_3]
-        position_[0-2] work the same as in three_way_partition().
-        position_3 is similar to position_2. When a key is to be put in
-        the position_3 partition, we rotate the elements in the
-        position_2 partition to open up a spot for the position_3 key.
-        We swap in the position_3 element and decrement position_2_end
-        and position_3_end because they both moved down an index.
+        position_[0-2] work the same as in three_key_partition().
+        position_3 is similar to position_2 in three_key_partition().
+        When a key is to be put in the position_3 partition, we rotate
+        the elements in the position_2 partition to open up a spot for
+        the position_3 key. We swap in the position_3 element and
+        decrement position_2_end and position_3_end because they both
+        moved down an index.
 
         Example:
         [0, 0, 1, 1, 3, X, X, 2, 2, 3, 3]
@@ -326,3 +327,69 @@ class P1_2_FourKeyPartitioning:
 
                 position_2_end -= 1
                 position_3_end -= 1
+
+class P1_3_TwoKeyPartitioning:
+    """
+    Keys take one of two (or boolean) values. Reorder L so that all
+    objects of the same key appear in the same subarray. The order
+    of the subarrays is not important.
+    Use O(1) space and O(|L|) time complexity.
+    """
+
+    @staticmethod
+    def two_key_partition(L):
+        """
+        Reorder L so that all objects of the same key appear in the same
+        subarray. The order of the subarrays is the order that the key
+        values are seen. Use O(1) space and O(|L|) time complexity.
+        Keys take one of two (or boolean) values.
+
+        This works the same as three_key_partition() but the order is
+        [position_0, position_1]
+        position_0 works the same as position_1 in three_key_partition()
+        position_1 works the same as position_2 in three_key_partition()
+
+        position_0 of three_key_partition() wasn't chosen to use as a
+        partition because it requires more work compared to the other
+        ones. It does a swap and two increments.
+        In three_key_partition(),
+        position_1 does one increment.
+        position_2 does one swap and one decrement.
+
+        When the loop is not finished, the order is
+        [position_0, unknown, position_1]
+
+        position_0 and position_1 is the first seen and second seen
+        key values respectively.
+        """
+
+        NUMBER_KEY_VALUES = 2
+
+        if (len(L) == 0):
+            return L
+
+        value_positions = {}
+        position = 0
+
+        unknown_start = 0 # = position_0_end
+        position_1_end = len(L) - 1 # = unknown_last
+
+        while(unknown_start <= position_1_end):
+            value = L[unknown_start].value
+
+            if (value not in value_positions):
+                if (position < NUMBER_KEY_VALUES):
+                    value_positions[value] = position
+                    position += 1
+                else:
+                    error_message = \
+                      "L has more than {} key values.".format(NUMBER_KEY_VALUES)
+                    raise TypeError(error_message)
+
+            if (value_positions[value] == 0):
+                unknown_start += 1
+            else: # value_positions[value] == 1
+                L[unknown_start], L[position_1_end] = \
+                L[position_1_end], L[unknown_start]
+
+                position_1_end -= 1

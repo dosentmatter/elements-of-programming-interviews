@@ -128,6 +128,77 @@ class P1_2_FourKeyPartitioning_Test(unittest.TestCase):
 
                     previous_value = value
 
+class P1_3_TwoKeyPartitioning_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P1_3_TwoKeyPartitioning
+
+        self.NUMBER_KEY_VALUES = 2
+
+    def test_two_key_partition(self):
+        two_key_partition = self.cls.two_key_partition
+
+        self.assertEqual(two_key_partition([]), [])
+
+    def test_two_key_partition_random(self):
+        two_key_partition = self.cls.two_key_partition
+
+        NUM_TESTS_RUN = 100
+        MAX_KEY_VALUE = 1000
+        MAX_LIST_LENGTH = 100
+        for _ in range(NUM_TESTS_RUN):
+            random_list_length = random.randint(1, MAX_LIST_LENGTH)
+            random_list = randomextra.randlist_subset(MAX_KEY_VALUE, \
+                                                      random_list_length, \
+                                                      self.NUMBER_KEY_VALUES)
+            random_list = list(map(general.key, random_list))
+
+            before_counter = collections.Counter(random_list)
+            two_key_partition(random_list)
+            after_counter = collections.Counter(random_list)
+
+            self.assertEqual(before_counter, after_counter)
+
+            done_values = set()
+            random_iter = iter(random_list)
+            previous_value = next(random_iter).value
+            for key in random_iter:
+                value = key.value
+
+                if (value != previous_value):
+                    self.assertNotIn(previous_value, done_values)
+                    done_values.add(previous_value)
+
+                    previous_value = value
+
+    def test_two_key_partition_random_boolean(self):
+        two_key_partition = self.cls.two_key_partition
+
+        NUM_TESTS_RUN = 100
+        MAX_LIST_LENGTH = 100
+        for _ in range(NUM_TESTS_RUN):
+            random_list_length = random.randint(1, MAX_LIST_LENGTH)
+            random_list = randomextra.randlist_boolean(random_list_length)
+            random_list = list(map(general.key, random_list))
+
+            before_counter = collections.Counter(random_list)
+            two_key_partition(random_list)
+            after_counter = collections.Counter(random_list)
+
+            self.assertEqual(before_counter, after_counter)
+
+            done_values = set()
+            random_iter = iter(random_list)
+            previous_value = next(random_iter).value
+            for key in random_iter:
+                value = key.value
+
+                if (value != previous_value):
+                    self.assertNotIn(previous_value, done_values)
+                    done_values.add(previous_value)
+
+                    previous_value = value
+
 def main():
     unittest.main()
 
