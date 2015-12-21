@@ -2,7 +2,7 @@ import random
 
 def randlist_duplicates(max_number, length, min_number=0):
     """
-    Returns a list of length length with elements ranging from
+    Return a list of length length with elements ranging from
     [min_number, max_number]. There can be duplicates.
     """
 
@@ -11,7 +11,7 @@ def randlist_duplicates(max_number, length, min_number=0):
 
 def randlist_from_list(L, length):
     """
-    Returns a list of length length with elements from L.
+    Return a list of length length with elements from L.
     There can be duplicates. If no duplicates are wanted, just
     use random.sample.
     """
@@ -21,7 +21,7 @@ def randlist_from_list(L, length):
 
 def randlist_subset(max_number, length, subset_length, min_number=0):
     """
-    Returns a list of length length with elements from a subset
+    Return a list of length length with elements from a subset
     (of length subset_length) of the range [min_number, max_number].
     There can be duplicates. If no duplicates are wanted, just
     use random.sample.
@@ -34,9 +34,17 @@ def randlist_subset(max_number, length, subset_length, min_number=0):
     subset = randlist_no_duplicates(max_number, subset_length, min_number)
     return randlist_from_list(subset, length)
 
+def randlist_boolean(length):
+    """
+    Return a list of length length with boolean elements. There can be
+    duplicates.
+    """
+
+    return randlist_from_list([True, False], length)
+
 def randlist_no_duplicates(max_number, length, min_number=0):
     """
-    Returns a list of length length with elements ranging from
+    Return a list of length length with elements ranging from
     [min_number, max_number]. There are no duplicates.
     """
 
