@@ -17,8 +17,8 @@ class P1_ThreeWayPartitioning_Test(unittest.TestCase):
         three_way_partition = self.cls.three_way_partition
 
         NUM_TESTS_RUN = 100
-        MAX_LIST_NUMBER = 10
-        MAX_LIST_LENGTH = 10
+        MAX_LIST_NUMBER = 1000
+        MAX_LIST_LENGTH = 100
         OPERATORS = [operator.__lt__, operator.__eq__, operator.__gt__]
         for _ in range(NUM_TESTS_RUN):
             random_list_length = random.randint(1, MAX_LIST_LENGTH)
@@ -68,9 +68,50 @@ class P1_1_ThreeKeyPartitioning_Test(unittest.TestCase):
             random_list = list(map(general.key, random_list))
 
             before_counter = collections.Counter(random_list)
-            print(random_list)
             three_key_partition(random_list)
-            print(random_list)
+            after_counter = collections.Counter(random_list)
+
+            self.assertEqual(before_counter, after_counter)
+
+            done_values = set()
+            random_iter = iter(random_list)
+            previous_value = next(random_iter).value
+            for key in random_iter:
+                value = key.value
+
+                if (value != previous_value):
+                    self.assertNotIn(previous_value, done_values)
+                    done_values.add(previous_value)
+
+                    previous_value = value
+
+class P1_2_FourKeyPartitioning_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P1_2_FourKeyPartitioning
+
+        self.NUMBER_KEY_VALUES = 4
+
+    def test_four_key_partition(self):
+        four_key_partition = self.cls.four_key_partition
+
+        self.assertEqual(four_key_partition([]), [])
+
+    def test_four_key_partition_random(self):
+        four_key_partition = self.cls.four_key_partition
+
+        NUM_TESTS_RUN = 100
+        MAX_KEY_VALUE = 1000
+        MAX_LIST_LENGTH = 100
+        for _ in range(NUM_TESTS_RUN):
+            random_list_length = random.randint(1, MAX_LIST_LENGTH)
+            random_list = randomextra.randlist_subset(MAX_KEY_VALUE, \
+                                                      random_list_length, \
+                                                      self.NUMBER_KEY_VALUES)
+            random_list = list(map(general.key, random_list))
+
+            before_counter = collections.Counter(random_list)
+            four_key_partition(random_list)
             after_counter = collections.Counter(random_list)
 
             self.assertEqual(before_counter, after_counter)
