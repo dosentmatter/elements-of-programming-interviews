@@ -567,11 +567,11 @@ class P12_XyRectanglesIntersect_Test(unittest.TestCase):
     def test_intersects(self):
         intersects = self.cls.intersects
 
-        all_intersect = all(intersects(self.BASE_RECTANGLE, rectangle) \
+        all_intersect = all(intersects(self.BASE_RECTANGLE, rectangle)
                             for rectangle in self.INTERSECT_RECTANGLES)
         self.assertTrue(all_intersect)
 
-        none_intersect = all(not intersects(self.BASE_RECTANGLE, rectangle) \
+        none_intersect = all(not intersects(self.BASE_RECTANGLE, rectangle)
                              for rectangle in self.NON_INTERSECT_RECTANGLES)
         self.assertTrue(none_intersect)
 
@@ -583,71 +583,71 @@ class P12_XyRectanglesIntersect_Test(unittest.TestCase):
 
         point = self.BASE_RECTANGLE.lower_right_point + Frozen_Point(-1, 1)
         rectangle = Rectangle.create_from_upper_left(point, 1, 1)
-        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+        intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[0])
         self.assertEqual(rectangle, intersection_rectangle)
         rectangle = Rectangle.create_from_lower_left(point, 1, 3)
-        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+        intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[1])
         self.assertEqual(rectangle, intersection_rectangle)
 
         point = self.BASE_RECTANGLE.upper_right_point + Frozen_Point(-1, -1)
         rectangle = Rectangle.create_from_lower_left(point, 1, 1)
-        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+        intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[2])
         self.assertEqual(rectangle, intersection_rectangle)
         rectangle = Rectangle.create_from_lower_right(point, 3, 1)
-        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+        intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[3])
         self.assertEqual(rectangle, intersection_rectangle)
 
         point = self.BASE_RECTANGLE.upper_left_point + Frozen_Point(1, -1)
         rectangle = Rectangle.create_from_lower_right(point, 1, 1)
-        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+        intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[4])
         self.assertEqual(rectangle, intersection_rectangle)
         rectangle = Rectangle.create_from_upper_right(point, 1, 3)
-        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+        intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[5])
         self.assertEqual(rectangle, intersection_rectangle)
 
         point = self.BASE_RECTANGLE.lower_left_point + Frozen_Point(1, 1)
         rectangle = Rectangle.create_from_upper_right(point, 1, 1)
-        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+        intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[6])
         self.assertEqual(rectangle, intersection_rectangle)
         rectangle = Rectangle.create_from_upper_left(point, 3, 1)
-        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+        intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[7])
         self.assertEqual(rectangle, intersection_rectangle)
 
         point = self.BASE_RECTANGLE.lower_right_point
         rectangle = Rectangle.create_from_upper_left(point, 0, 0)
-        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+        intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[8])
         self.assertEqual(rectangle, intersection_rectangle)
 
         point = self.BASE_RECTANGLE.upper_right_point
         rectangle = Rectangle.create_from_lower_left(point, 0, 0)
-        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+        intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[9])
         self.assertEqual(rectangle, intersection_rectangle)
 
         point = self.BASE_RECTANGLE.upper_left_point
         rectangle = Rectangle.create_from_lower_right(point, 0, 0)
-        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+        intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[10])
         self.assertEqual(rectangle, intersection_rectangle)
 
         point = self.BASE_RECTANGLE.lower_left_point
         rectangle = Rectangle.create_from_upper_right(point, 0, 0)
-        intersection_rectangle = intersection(self.BASE_RECTANGLE, \
+        intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[11])
         self.assertEqual(rectangle, intersection_rectangle)
 
 
-        none_intersect = all(intersection(self.BASE_RECTANGLE, \
-                                          rectangle) is None \
+        none_intersect = all(intersection(self.BASE_RECTANGLE,
+                                          rectangle) is None
                              for rectangle in self.NON_INTERSECT_RECTANGLES)
         self.assertTrue(none_intersect)
 
