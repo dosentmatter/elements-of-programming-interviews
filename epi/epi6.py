@@ -1,4 +1,4 @@
-from epi.utils import listextra
+from epi.utils import listextra, randomextra
 
 class P1_ThreeWayPartitioning:
     """
@@ -393,3 +393,200 @@ class P1_3_TwoKeyPartitioning:
                 L[position_1_end], L[unknown_start]
 
                 position_1_end -= 1
+
+class P2_UninitializedArray:
+    """
+    Design a deterministic scheme by which reads and writes to an
+    uninitialized array can be made in O(1) time. You may use O(n)
+    additional storage; reads to uninitialized entry should return
+    false. The array can hold any data, not just boolean.
+    """
+
+    class UninitializedArray:
+        """
+        An uninitialized array with reads and writes that are O(1).
+
+        This array is backed up by three lists - index_elements,
+        index_initialize_times, and initialize_time_indices. It is easier to
+        think of these lists as maps rather than lists. index_elements
+        maps indices to elements, index_initialize_times maps indices to
+        initialize times, and initialize_time_indices maps initialize times
+        to indices.
+
+        index_elements is the list that holds the actual data. It may be wrong
+        depending if the index was initialized.
+
+        The other two lists are used to check if the data has been initialized.
+
+        initialize time is the time that an element at an index was initialized.
+        For example, the first call to __setitem__ would be the 0th
+        initialize time. The next call would be the 1st initialize time.
+
+        number_initialized is the amount of elements that have been initialized.
+        initialize times < number_initialized have been initialized because
+        number_initialized is only incremented when elements are initialized.
+
+        index_initialize_times tells when an index was initialized.
+        It may be wrong depending if the index was initialized.
+
+        initialize_time_indices tells which index was initialized at an
+        initialize time. All initialize_time < number_initialized are correct.
+        Which means the indices that these initialize_time are mapped to
+        have been initialized.
+
+        Notice that initialize_time_indices is the only list that tells
+        true information up to number_initialized because the elements are
+        written sequentially. The other two lists, index_elements and
+        index_initialize_times may be true or false because they are written
+        randomly and we can't use anything to track random writes such as
+        a dictionary.
+
+        So this means one way to read an index is to check all
+        initialize_time < number_initialized and see if initialize_time_indices
+        contains the index being read. If the index is contained, we return
+        the element in index_elements at that index. Otherwise, we return False.
+        We can do this because we know that index has been initialized.
+        However, this takes O(n) time and we want O(1) time.
+        This is why we include index_initialize_times.
+
+        Notice that index_initialize_times is just the opposite mapping
+        of initialize_time_indices. index_initialize_times is used to speed
+        up the search to see if an index has been initialized. Instead of doing
+        an O(n) search through initialize_time_indices when doing a read, we 
+        index into index_initialize_times and use the initialize_time
+        given see if the index has been written.
+
+        An example will make this easier to explain.
+        Let's say we want to read the element at index 6.
+        We don't know if index_elements[6] is correct because we don't know
+        if it has been initialized. We also, don't know if
+        index_initialize_times[6] is correct for the same reason, but we
+        can use it to help us.
+
+        Let's say index_initialize_times[6] == 7. This is saying
+        the element at index 6 was initialized at time 7 which may or may not
+        be true.
+        Let the proposition, P be
+        P: The element at index 6 was initialized at time 7
+
+        Let's say number_initialized == 20. Since 7 < 20, P may still be
+        true. If number_initialized was 4, we know that P is false because
+        we haven't initialized up to the 7th initialize time yet. This
+        means index_elements[6] and index_initialize_times[6] has
+        uninitialized data and we return False.
+
+        So we continue with number_initialized == 20. We use 7 (an initialize
+        time) to index into initialize_time_indices. If
+        initialize_time_indices[7] == 6, we know index 6 has been initialized
+        because initialize_time_indices is true up to number_initialized == 20.
+        We can then return index_elements[6] and this all took O(1) time.
+
+        In summary,
+        P: initialize_time_indices[7] == 6
+        Q: index 6 is initialized
+        P => Q is true
+
+        The problem comes when initialize_time_indices[7] != 6. We have to
+        prove that this implies that index 6 is uninitialized.
+        So let
+        P: initialize_time_indices[7] != 6
+        Q: index 6 is uninitialized
+        Does P => Q?
+        Notice this implication is the inverse of the above one.
+
+        I will prove this by contradiction. Assume P => Q is false. This
+        means that if P: initialize_time_indices[7] != 6, then
+        (not Q): index 6 is initialized. If index 6 is initialized, this
+        means that index_initialize_times[6] == 7 is true because index
+        6 has been initialized. But initialize_time_indices[7] != 6 is
+        also true because 7 < (number_initialized == 20), which contradicts
+        with index_initialize_times[6] == 7. Proof by contradiction,
+        so P => Q is true.
+
+        You can generalize the example to when a different index is
+        being read.
+        """
+
+        def __init__(self, length):
+            """
+            Initialize this array of length length with random data.
+            The random data represents the uninitialized data a malloc
+            would give.
+
+            Set up the lists with random integers up to a maximum of
+            ARBITRARY_MAX_INT that was chosen arbitrarily.
+            """
+
+            ARBITRARY_MAX_INT = 1000000
+
+            self.length = length
+
+            self.index_elements = \
+                randomextra.randlist_duplicates(ARBITRARY_MAX_INT, length)
+            self.index_initialize_times = \
+                randomextra.randlist_duplicates(ARBITRARY_MAX_INT, length)
+            self.initialize_time_indices = \
+                randomextra.randlist_duplicates(ARBITRARY_MAX_INT, length)
+
+            self.number_initialized = 0
+
+        def __setitem__(self, index, value):
+            """
+            Set the item at index to value.
+
+            Indices are initialized the first time they are written to.
+            """
+
+            self.index_elements[index] = value
+
+            if (not self.is_initialized(index)):
+                self.initialize(index)
+
+        def __getitem__(self, index):
+            """
+            Get the item at index.
+
+            Data is only valid if the index is initialized. If invalid,
+            return False.
+            """
+
+            result = False
+
+            if (self.is_initialized(index)):
+                result = self.index_elements[index]
+
+            return result
+
+        def initialize(self, index):
+            """
+            Initialize index.
+
+            index_initialize_times and initialize_time_indices are opposite
+            maps so they both get the information that index is the next
+            index being initialized. The current initialization time is
+            number_initialized. After this time is used, we increment it.
+            """
+
+            self.index_initialize_times[index] = self.number_initialized
+            self.initialize_time_indices[self.number_initialized] = index
+
+            self.number_initialized += 1
+
+        def is_initialized(self, index):
+            """
+            Return True if index is initialized.
+
+            This is explained in the class docstring where indices are only
+            valid after they have been initialized.
+            """
+
+            initialize_time = self.index_initialize_times[index]
+            return (initialize_time < self.number_initialized) and \
+                   (self.initialize_time_indices[initialize_time] == index)
+
+        def __len__(self):
+            """
+            Return the length of this array.
+            """
+
+            return self.length

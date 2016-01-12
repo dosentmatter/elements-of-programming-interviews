@@ -199,6 +199,55 @@ class P1_3_TwoKeyPartitioning_Test(unittest.TestCase):
 
                     previous_value = value
 
+class P2_UninitializedArray_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P2_UninitializedArray
+
+    def test_UninitializedArray(self):
+        UninitializedArray = self.cls.UninitializedArray
+
+        array = UninitializedArray(100)
+
+        for element in array:
+            self.assertIs(element, False)
+
+        write_indices = {9, 39, 69, 99}
+
+        for i in write_indices:
+            array[i] = True
+            self.assertIs(array[i], True)
+
+        for i, element in enumerate(array):
+            if (i not in write_indices):
+                self.assertIs(element, False)
+
+    def test_UninitializedArray_random(self):
+        UninitializedArray = self.cls.UninitializedArray
+
+        NUM_TESTS_RUN = 100
+        MAX_ARRAY_LENGTH = 100
+        for _ in range(NUM_TESTS_RUN):
+            random_array_length = random.randint(0, MAX_ARRAY_LENGTH)
+            random_array = UninitializedArray(random_array_length)
+
+            for element in random_array:
+                self.assertIs(element, False)
+
+            random_write_amount = random.randint(0, random_array_length)
+            random_write_indices = \
+                randomextra.randlist_no_duplicates(random_array_length - 1,
+                                                   random_write_amount)
+            random_write_indices = set(random_write_indices)
+
+            for i in random_write_indices:
+                random_array[i] = True
+                self.assertIs(random_array[i], True)
+
+            for i, element in enumerate(random_array):
+                if (i not in random_write_indices):
+                    self.assertIs(element, False)
+
 def main():
     unittest.main()
 
