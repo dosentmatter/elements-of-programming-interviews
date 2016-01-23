@@ -3,10 +3,10 @@ from epi.epi4 import *
 import random
 from epi.utils import randomextra
 
-class Max_Diff_Test(unittest.TestCase):
+class P1_MaxDiff_Test(unittest.TestCase):
 
     def setUp(self):
-        self.cls = Max_Diff
+        self.cls = P1_MaxDiff
 
     def test_random(self):
         brute_force = self.cls.brute_force

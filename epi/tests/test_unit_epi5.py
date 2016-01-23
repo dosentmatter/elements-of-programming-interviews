@@ -497,33 +497,33 @@ class P12_XyRectanglesIntersect_Test(unittest.TestCase):
         self.cls = P12_XyRectanglesIntersect
 
         Rectangle = mathextra.Rectangle
-        Frozen_Point = mathextra.Frozen_Point
+        FrozenPoint = mathextra.FrozenPoint
 
-        point = Frozen_Point(0, 0)
+        point = FrozenPoint(0, 0)
         rectangle = Rectangle.create_from_lower_left(point, 5, 5)
         self.BASE_RECTANGLE = rectangle
 
         self.INTERSECT_RECTANGLES = []
 
-        point = self.BASE_RECTANGLE.lower_right_point + Frozen_Point(-1, 1)
+        point = self.BASE_RECTANGLE.lower_right_point + FrozenPoint(-1, 1)
         rectangle = Rectangle.create_from_upper_left(point, 3, 3)
         self.INTERSECT_RECTANGLES.append(rectangle)
         rectangle = Rectangle.create_from_lower_left(point, 3, 3)
         self.INTERSECT_RECTANGLES.append(rectangle)
 
-        point = self.BASE_RECTANGLE.upper_right_point + Frozen_Point(-1, -1)
+        point = self.BASE_RECTANGLE.upper_right_point + FrozenPoint(-1, -1)
         rectangle = Rectangle.create_from_lower_left(point, 3, 3)
         self.INTERSECT_RECTANGLES.append(rectangle)
         rectangle = Rectangle.create_from_lower_right(point, 3, 3)
         self.INTERSECT_RECTANGLES.append(rectangle)
 
-        point = self.BASE_RECTANGLE.upper_left_point + Frozen_Point(1, -1)
+        point = self.BASE_RECTANGLE.upper_left_point + FrozenPoint(1, -1)
         rectangle = Rectangle.create_from_lower_right(point, 3, 3)
         self.INTERSECT_RECTANGLES.append(rectangle)
         rectangle = Rectangle.create_from_upper_right(point, 3, 3)
         self.INTERSECT_RECTANGLES.append(rectangle)
 
-        point = self.BASE_RECTANGLE.lower_left_point + Frozen_Point(1, 1)
+        point = self.BASE_RECTANGLE.lower_left_point + FrozenPoint(1, 1)
         rectangle = Rectangle.create_from_upper_right(point, 3, 3)
         self.INTERSECT_RECTANGLES.append(rectangle)
         rectangle = Rectangle.create_from_upper_left(point, 3, 3)
@@ -548,19 +548,19 @@ class P12_XyRectanglesIntersect_Test(unittest.TestCase):
 
         self.NON_INTERSECT_RECTANGLES = []
 
-        point = self.BASE_RECTANGLE.lower_right_point + Frozen_Point(1, -1)
+        point = self.BASE_RECTANGLE.lower_right_point + FrozenPoint(1, -1)
         rectangle = Rectangle.create_from_upper_left(point, 3, 3)
         self.NON_INTERSECT_RECTANGLES.append(rectangle)
 
-        point = self.BASE_RECTANGLE.upper_right_point + Frozen_Point(1, 1)
+        point = self.BASE_RECTANGLE.upper_right_point + FrozenPoint(1, 1)
         rectangle = Rectangle.create_from_lower_left(point, 3, 3)
         self.NON_INTERSECT_RECTANGLES.append(rectangle)
 
-        point = self.BASE_RECTANGLE.upper_left_point + Frozen_Point(-1, 1)
+        point = self.BASE_RECTANGLE.upper_left_point + FrozenPoint(-1, 1)
         rectangle = Rectangle.create_from_lower_right(point, 3, 3)
         self.NON_INTERSECT_RECTANGLES.append(rectangle)
 
-        point = self.BASE_RECTANGLE.lower_left_point + Frozen_Point(-1, -1)
+        point = self.BASE_RECTANGLE.lower_left_point + FrozenPoint(-1, -1)
         rectangle = Rectangle.create_from_upper_right(point, 3, 3)
         self.NON_INTERSECT_RECTANGLES.append(rectangle)
 
@@ -579,9 +579,9 @@ class P12_XyRectanglesIntersect_Test(unittest.TestCase):
         intersection = self.cls.intersection
 
         Rectangle = mathextra.Rectangle
-        Frozen_Point = mathextra.Frozen_Point
+        FrozenPoint = mathextra.FrozenPoint
 
-        point = self.BASE_RECTANGLE.lower_right_point + Frozen_Point(-1, 1)
+        point = self.BASE_RECTANGLE.lower_right_point + FrozenPoint(-1, 1)
         rectangle = Rectangle.create_from_upper_left(point, 1, 1)
         intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[0])
@@ -591,7 +591,7 @@ class P12_XyRectanglesIntersect_Test(unittest.TestCase):
                                               self.INTERSECT_RECTANGLES[1])
         self.assertEqual(rectangle, intersection_rectangle)
 
-        point = self.BASE_RECTANGLE.upper_right_point + Frozen_Point(-1, -1)
+        point = self.BASE_RECTANGLE.upper_right_point + FrozenPoint(-1, -1)
         rectangle = Rectangle.create_from_lower_left(point, 1, 1)
         intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[2])
@@ -601,7 +601,7 @@ class P12_XyRectanglesIntersect_Test(unittest.TestCase):
                                               self.INTERSECT_RECTANGLES[3])
         self.assertEqual(rectangle, intersection_rectangle)
 
-        point = self.BASE_RECTANGLE.upper_left_point + Frozen_Point(1, -1)
+        point = self.BASE_RECTANGLE.upper_left_point + FrozenPoint(1, -1)
         rectangle = Rectangle.create_from_lower_right(point, 1, 1)
         intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[4])
@@ -611,7 +611,7 @@ class P12_XyRectanglesIntersect_Test(unittest.TestCase):
                                               self.INTERSECT_RECTANGLES[5])
         self.assertEqual(rectangle, intersection_rectangle)
 
-        point = self.BASE_RECTANGLE.lower_left_point + Frozen_Point(1, 1)
+        point = self.BASE_RECTANGLE.lower_left_point + FrozenPoint(1, 1)
         rectangle = Rectangle.create_from_upper_right(point, 1, 1)
         intersection_rectangle = intersection(self.BASE_RECTANGLE,
                                               self.INTERSECT_RECTANGLES[6])
@@ -659,34 +659,34 @@ class P12_1_IsRectangle_Test(unittest.TestCase):
         self.RECTANGLES = []
 
         Rectangle = mathextra.Rectangle
-        Frozen_Point = mathextra.Frozen_Point
+        FrozenPoint = mathextra.FrozenPoint
 
-        point = Frozen_Point(0, 0)
+        point = FrozenPoint(0, 0)
         rectangle = Rectangle.create_from_lower_left(point, 3, 3)
         self.RECTANGLES.append(rectangle.points)
 
-        point = Frozen_Point(0, 0)
+        point = FrozenPoint(0, 0)
         rectangle = Rectangle.create_from_lower_left(point, 0, 0)
         self.RECTANGLES.append(rectangle.points)
 
-        point = Frozen_Point(1, 0)
+        point = FrozenPoint(1, 0)
         rectangle = Rectangle.create_from_lower_left(point, 3, 3)
         self.RECTANGLES.append(rectangle.points)
 
-        point = Frozen_Point(1, 1)
+        point = FrozenPoint(1, 1)
         rectangle = Rectangle.create_from_upper_left(point, 3, 3)
         self.RECTANGLES.append(rectangle.points)
 
-        point = Frozen_Point(-1, 1)
+        point = FrozenPoint(-1, 1)
         rectangle = Rectangle.create_from_upper_right(point, 3, 3)
         self.RECTANGLES.append(rectangle.points)
 
-        point = Frozen_Point(-1.2, 1.5)
+        point = FrozenPoint(-1.2, 1.5)
         rectangle = Rectangle.create_from_upper_right(point, 6.7, 8.1)
         self.RECTANGLES.append(rectangle.points)
 
 
-        p = mathextra.Frozen_Point
+        p = mathextra.FrozenPoint
 
         self.RECTANGLES.append((p(0, 0), p(1, 1), p(-1, 1), p(0, 2)))
 

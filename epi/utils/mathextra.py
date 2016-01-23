@@ -231,7 +231,7 @@ def int_sqrt(x):
         next_guess = update(guess)
     return guess
 
-class Abstract_Point(metaclass=ABCMeta):
+class AbstractPoint(metaclass=ABCMeta):
     """
     A 2-dimensional point on the Cartesian coordinates. This class also
     acts like a vector since it has methods such as __add__ and norm.
@@ -323,7 +323,7 @@ class Abstract_Point(metaclass=ABCMeta):
     def __mul__(self, other):
         """
         Multiply self by other and return. If other is a scalar,
-        multiply x and y of self by other. If other is an Abstract_Point,
+        multiply x and y of self by other. If other is an AbstractPoint,
         multiply x and y of self by x and y of other respectively.
         """
 
@@ -345,7 +345,7 @@ class Abstract_Point(metaclass=ABCMeta):
     def __truediv__(self, other):
         """
         Truediv self by other and return. If other is a scalar,
-        truediv x and y of self by other. If other is an Abstract_Point,
+        truediv x and y of self by other. If other is an AbstractPoint,
         truediv x and y of self by x and y of other respectively.
         """
 
@@ -360,7 +360,7 @@ class Abstract_Point(metaclass=ABCMeta):
     def __floordiv__(self, other):
         """
         Floordiv self by other and return. If other is a scalar,
-        floordiv x and y of self by other. If other is an Abstract_Point,
+        floordiv x and y of self by other. If other is an AbstractPoint,
         floordiv x and y of self by x and y of other respectively.
         """
 
@@ -401,12 +401,12 @@ class Abstract_Point(metaclass=ABCMeta):
         overridden together.
         This works by having subclasses inherit this class' _can_equal()
         if it is not overridden. If _can_equal() is not overridden, that
-        means the subclass is similar to a Abstract_Point so it uses
-        Abstract_Point's _can_equal() and the subclass can be equal to a
-        Abstract_Point.
+        means the subclass is similar to a AbstractPoint so it uses
+        AbstractPoint's _can_equal() and the subclass can be equal to a
+        AbstractPoint.
         """
 
-        return isinstance(other, Abstract_Point) and other._can_equal(self) and \
+        return isinstance(other, AbstractPoint) and other._can_equal(self) and \
                self._attributes_equal(other)
 
     def _can_equal(self, other):
@@ -414,7 +414,7 @@ class Abstract_Point(metaclass=ABCMeta):
         Return True if other can be equal to self.
         """
 
-        return isinstance(other, Abstract_Point)
+        return isinstance(other, AbstractPoint)
 
     def _attributes_equal(self, other):
         """
@@ -450,7 +450,7 @@ class Abstract_Point(metaclass=ABCMeta):
         equal to eachother.
         """
 
-        return isinstance(other, Abstract_Point) and other._can_equal(self) and \
+        return isinstance(other, AbstractPoint) and other._can_equal(self) and \
                self._attributes_close(other)
 
     def _attributes_close(self, other):
@@ -467,7 +467,7 @@ class Abstract_Point(metaclass=ABCMeta):
 
     def __repr__(self):
         """
-        Return the representation of self. Looks like Abstract_Point(x=1, y=2).
+        Return the representation of self. Looks like AbstractPoint(x=1, y=2).
         """
 
         return "{}(x={!r}, y={!r})".format(self.__class__.__name__, self.x, self.y)
@@ -503,29 +503,29 @@ class Abstract_Point(metaclass=ABCMeta):
 
         if (self.x > 0):
             if (self.y > 0):
-                return Abstract_Point.Region.QUADRANT1
+                return AbstractPoint.Region.QUADRANT1
             elif (self.y == 0):
-                return Abstract_Point.Region.POSITIVE_X
+                return AbstractPoint.Region.POSITIVE_X
             else: # self.y < 0
-                return Abstract_Point.Region.QUADRANT4
+                return AbstractPoint.Region.QUADRANT4
         elif (self.x == 0):
             if (self.y > 0):
-                return Abstract_Point.Region.POSITIVE_Y
+                return AbstractPoint.Region.POSITIVE_Y
             elif (self.y == 0):
-                return Abstract_Point.Region.ORIGIN
+                return AbstractPoint.Region.ORIGIN
             else: # self.y < 0
-                return Abstract_Point.Region.NEGATIVE_Y
+                return AbstractPoint.Region.NEGATIVE_Y
         else: # self.x < 0
             if (self.y > 0):
-                return Abstract_Point.Region.QUADRANT2
+                return AbstractPoint.Region.QUADRANT2
             elif (self.y == 0):
-                return Abstract_Point.Region.NEGATIVE_X
+                return AbstractPoint.Region.NEGATIVE_X
             else: # self.y < 0
-                return Abstract_Point.Region.QUADRANT3
+                return AbstractPoint.Region.QUADRANT3
 
-class Frozen_Point(Abstract_Point):
+class FrozenPoint(AbstractPoint):
     """
-    An immutable Abstract_Point. This class is immutable and subclasses
+    An immutable AbstractPoint. This class is immutable and subclasses
     should be immutable.
     """
 
@@ -554,7 +554,7 @@ class Frozen_Point(Abstract_Point):
     def __init__(self, x, y):
         """
         Initialize x, y, and _region to use as a cache for the region
-        since it won't change for an immutable Abstract_Point.
+        since it won't change for an immutable AbstractPoint.
         """
 
         super().__init__(x, y)
@@ -570,12 +570,12 @@ class Frozen_Point(Abstract_Point):
             object.__setattr__(self, "_region", super().region)
         return self._region
 
-class Abstract_Colored_Point(Abstract_Point):
+class AbstractColoredPoint(AbstractPoint):
     """
-    An Abstract_Point that has a color.
+    An AbstractPoint that has a color.
 
     This is an example class on how to create subclasses. This is also
-    an abstract class liken Abstract_Point because it doesn't override
+    an abstract class liken AbstractPoint because it doesn't override
     __setattr__() and __delattr__().
     """
 
@@ -619,7 +619,7 @@ class Abstract_Colored_Point(Abstract_Point):
         Return True if self is equal to other.
         """
 
-        return isinstance(other, Abstract_Colored_Point) and \
+        return isinstance(other, AbstractColoredPoint) and \
                other._can_equal(self) and \
                self._attributes_equal(other)
 
@@ -628,7 +628,7 @@ class Abstract_Colored_Point(Abstract_Point):
         Return True if other can be equal to self.
         """
 
-        return isinstance(other, Abstract_Colored_Point)
+        return isinstance(other, AbstractColoredPoint)
 
     def _attributes_equal(self, other):
         """
@@ -643,9 +643,9 @@ class Abstract_Colored_Point(Abstract_Point):
                                                  self.y,
                                                  self.color)
 
-class Frozen_Colored_Point(Abstract_Colored_Point, Frozen_Point):
+class FrozenColoredPoint(AbstractColoredPoint, FrozenPoint):
     """
-    An Abstract_Colored_Point that is frozen.
+    An AbstractColoredPoint that is frozen.
     """
 
     def __hash__(self):
@@ -657,9 +657,9 @@ class Frozen_Colored_Point(Abstract_Colored_Point, Frozen_Point):
 
         return hash((self.x, self.y, self.color))
 
-class Mutable_Point(Abstract_Point):
+class MutablePoint(AbstractPoint):
     """
-    A Mutable Abstract_Point. This class is mutable and subclasses
+    A Mutable AbstractPoint. This class is mutable and subclasses
     should be mutable.
     """
 
@@ -698,7 +698,7 @@ class Mutable_Point(Abstract_Point):
     def __imul__(self, other):
         """
         Multiply self by other. If other is a scalar,
-        multiply x and y of self by other. If other is an Abstract_Point,
+        multiply x and y of self by other. If other is an AbstractPoint,
         multiply x and y of self by x and y of other respectively.
         """
 
@@ -713,7 +713,7 @@ class Mutable_Point(Abstract_Point):
     def __itruediv__(self, other):
         """
         Truediv self by other. If other is a scalar,
-        truediv x and y of self by other. If other is an Abstract_Point,
+        truediv x and y of self by other. If other is an AbstractPoint,
         truediv x and y of self by x and y of other respectively.
         """
 
@@ -728,7 +728,7 @@ class Mutable_Point(Abstract_Point):
     def __ifloordiv__(self, other):
         """
         Floordiv self by other. If other is a scalar,
-        floordiv x and y of self by other. If other is an Abstract_Point,
+        floordiv x and y of self by other. If other is an AbstractPoint,
         floordiv x and y of self by x and y of other respectively.
         """
 
@@ -740,9 +740,9 @@ class Mutable_Point(Abstract_Point):
             self.y //= other
         return self
 
-class Mutable_Colored_Point(Abstract_Colored_Point, Mutable_Point):
+class MutableColoredPoint(AbstractColoredPoint, MutablePoint):
     """
-    An Abstract_Colored_Point that is mutable.
+    An AbstractColoredPoint that is mutable.
     """
 
     pass
@@ -798,7 +798,7 @@ class Rectangle:
         Create a Rectangle from the upper-right point.
         """
 
-        lower_left_point = upper_right_point - Frozen_Point(width, height)
+        lower_left_point = upper_right_point - FrozenPoint(width, height)
         return cls(lower_left_point, width, height)
 
     @classmethod
@@ -807,7 +807,7 @@ class Rectangle:
         Create a Rectangle from the upper-left point.
         """
 
-        lower_left_point = upper_left_point - Frozen_Point(0, height)
+        lower_left_point = upper_left_point - FrozenPoint(0, height)
         return cls(lower_left_point, width, height)
 
     @classmethod
@@ -816,7 +816,7 @@ class Rectangle:
         Create a Rectangle from the lower-right point.
         """
 
-        lower_left_point = lower_right_point - Frozen_Point(width, 0)
+        lower_left_point = lower_right_point - FrozenPoint(width, 0)
         return cls(lower_left_point, width, height)
 
     @classmethod
@@ -854,7 +854,7 @@ class Rectangle:
         Return the upper-right point.
         """
 
-        return self.lower_left_point + Frozen_Point(self.width, self.height)
+        return self.lower_left_point + FrozenPoint(self.width, self.height)
 
     @property
     def upper_left_point(self):
@@ -862,7 +862,7 @@ class Rectangle:
         Return the upper-left point.
         """
 
-        return self.lower_left_point + Frozen_Point(0, self.height)
+        return self.lower_left_point + FrozenPoint(0, self.height)
 
     @property
     def lower_right_point(self):
@@ -870,7 +870,7 @@ class Rectangle:
         Return the lower-right point.
         """
 
-        return self.lower_left_point + Frozen_Point(self.width, 0)
+        return self.lower_left_point + FrozenPoint(self.width, 0)
 
     @property
     def points(self):
@@ -974,7 +974,7 @@ class Rectangle:
             y1 = min(self_p1.y, rect_p1.y)
             width = x1 - x
             height = y1 - y
-            return Rectangle(Frozen_Point(x, y), width, height)
+            return Rectangle(FrozenPoint(x, y), width, height)
         return None
 
     def __eq__(self, other):

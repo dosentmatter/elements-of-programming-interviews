@@ -1,4 +1,4 @@
-class Max_Diff:
+class P1_MaxDiff:
     """
     Compute the max difference in a list, L.
     """
