@@ -1,5 +1,6 @@
-from epi.utils import bitmanip, mathextra, stringextra, itertoolsextra, python
 from collections import deque
+
+from epi.utils import bitmanip, itertoolsextra, mathextra, python, stringextra
 
 class P1_Parity:
     """

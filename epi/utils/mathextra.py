@@ -1,9 +1,10 @@
-import fractions
-import math
-from epi.utils import itertoolsextra, python
+from abc import abstractmethod, ABCMeta
 from collections import namedtuple
 from enum import Enum
-from abc import ABCMeta, abstractmethod
+import fractions
+import math
+
+from epi.utils import itertoolsextra, python
 
 def n_choose_r(n, r):
     """
