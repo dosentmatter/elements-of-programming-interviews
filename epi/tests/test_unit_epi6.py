@@ -1,7 +1,10 @@
+import collections
+import operator
+import random
 import unittest
+
 from epi.epi6 import *
-from epi.utils import randomextra, general
-import random, operator, collections
+from epi.utils import general, mathextra, randomextra
 
 class P1_ThreeWayPartitioning_Test(unittest.TestCase):
 
@@ -247,6 +250,34 @@ class P2_UninitializedArray_Test(unittest.TestCase):
             for i, element in enumerate(random_array):
                 if (i not in random_write_indices):
                     self.assertIs(element, False)
+
+class P3_RobotMaxDiff_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P3_RobotMaxDiff
+
+    def test_robot_max_diff(self):
+        robot_max_diff = self.cls.robot_max_diff
+
+        z_iterable = [0, 1, 2, 3, 4, 5]
+        z_iterable = map(self.__class__.add_random_x_y_coordinates, z_iterable)
+        self.assertEquals(robot_max_diff(z_iterable), 5)
+
+        z_iterable = [0, 1, 99, 3, 4, 5]
+        z_iterable = map(self.__class__.add_random_x_y_coordinates, z_iterable)
+        self.assertEquals(robot_max_diff(z_iterable), 99)
+
+        z_iterable = [12, 21, 5, 54, 6, 2, 6]
+        z_iterable = map(self.__class__.add_random_x_y_coordinates, z_iterable)
+        self.assertEquals(robot_max_diff(z_iterable), 49)
+
+    @staticmethod
+    def add_random_x_y_coordinates(z):
+        ARBITRARY_MAX_X_Y = 1000000
+        x = random.randint(0, ARBITRARY_MAX_X_Y)
+        y = random.randint(0, ARBITRARY_MAX_X_Y)
+
+        return mathextra.ThreeDimensionalPoint(x, y, z)
 
 def main():
     unittest.main()

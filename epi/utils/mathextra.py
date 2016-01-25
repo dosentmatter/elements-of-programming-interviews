@@ -1110,3 +1110,13 @@ class Rectangle:
         vector_32 = point2 - point3
 
         return (vector_01 == vector_32) or vector_01.is_close(vector_32)
+
+class ThreeDimensionalPoint:
+    """
+    A 3-dimensional point on the Cartesian coordinates.
+    """
+
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z

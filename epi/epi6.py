@@ -1,4 +1,6 @@
-from epi.utils import listextra, randomextra
+import operator
+
+from epi.utils import itertoolsextra, listextra, randomextra
 
 class P1_ThreeWayPartitioning:
     """
@@ -590,3 +592,26 @@ class P2_UninitializedArray:
             """
 
             return self.length
+
+class P3_RobotMaxDiff:
+    """
+    A robot is traveling a path with ascents and descents. It uses
+    battery on ascents and recharges on descents. The recharging
+    is ideal: every Joule of gravitational potential energy converts
+    to a Joule of electrical energy. The battery has a limited
+    capacity and once it reaches its capacity, the energy generated
+    in descending is lost.
+    Design an algorithm that taks a sequence of n three-dimensional
+    coordinates to be traversed, and returns the minimum battery
+    capacity needed to complete the journey. The robot begins with
+    a fully charged battery.
+    """
+
+    @staticmethod
+    def robot_max_diff(points):
+        """
+        """
+
+        z_coordinates = \
+                map(operator.attrgetter("z"), points)
+        return itertoolsextra.max_diff(z_coordinates)
