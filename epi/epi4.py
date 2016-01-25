@@ -1,3 +1,5 @@
+from epi.utils import itertoolsextra
+
 class P1_MaxDiff:
     """
     Compute the max difference in a list, L.
@@ -45,16 +47,6 @@ class P1_MaxDiff:
     def previous_min(L):
         """
         Return max difference by keeping track of the previous minimum.
-
-        Uses the previous minimum to calculate a new difference and update
-        the current max difference if it is bigger.
         """
 
-        mini = float("inf")
-        max_diff = -float("inf")
-        for e in L:
-            # find max_diff using PREVIOUS minimum
-            max_diff = max(max_diff, e - mini)
-            # after finding current max_diff, can update the previous minimum
-            mini = min(mini, e)
-        return max_diff
+        return itertoolsextra.max_diff(L)

@@ -71,3 +71,20 @@ def range_length(*args):
     number_step_groups = number_elements_no_zero // step
     groups_including_zero = number_step_groups + 1
     return groups_including_zero
+
+def max_diff(iterable):
+    """
+    Return max difference by keeping track of the previous minimum.
+
+    Uses the previous minimum to calculate a new difference and update
+    the current max difference if it is bigger.
+    """
+
+    mini = float("inf")
+    max_diff = -float("inf")
+    for e in iterable:
+        # find max_diff using PREVIOUS minimum
+        max_diff = max(max_diff, e - mini)
+        # after finding current max_diff, can update the previous minimum
+        mini = min(mini, e)
+    return max_diff
