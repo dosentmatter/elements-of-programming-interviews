@@ -4,7 +4,7 @@ from enum import Enum
 import fractions
 import math
 
-from epi.utils import itertoolsextra, python
+from epi.utils import python
 
 def n_choose_r(n, r):
     """
@@ -128,7 +128,7 @@ def generate_primes(n):
     # vectors are unaffected by shifts
     number_vector_to_prime_boolean_vector = lambda nv: nv // 2
 
-    prime_boolean_list_length = itertoolsextra.range_length(3, n + 1, 2)
+    prime_boolean_list_length = len(range(3, n + 1, 2))
     prime_boolean_list = [True] * prime_boolean_list_length
     for (i, is_prime) in enumerate(prime_boolean_list):
         if (is_prime):

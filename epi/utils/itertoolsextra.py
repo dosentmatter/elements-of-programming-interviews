@@ -2,7 +2,9 @@ def range_length(*args):
     """
     Returns the number of iterations of a Python range() mathematically.
     The parameters are the same as the Python range() - either
-    (stop) or (start, stop[, step]).
+    (stop) or (start, stop[, step]). You can actually just use
+    len(range(stop)) or len(range(start, stop[, step])). This function
+    turns out to be useless.
 
     The calculation works as follows:
     It is easier to show a concrete example so I will choose values for
