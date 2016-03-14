@@ -1,6 +1,6 @@
 def range_length(*args):
     """
-    Returns the number of iterations of a Python range() mathematically.
+    Return the number of iterations of a Python range() mathematically.
     The parameters are the same as the Python range() - either
     (stop) or (start, stop[, step]). You can actually just use
     len(range(stop)) or len(range(start, stop[, step])). This function
@@ -50,7 +50,7 @@ def range_length(*args):
     step = 1
     if (length == 0):
         raise TypeError("range_length expected 1 argument, got 0")
-    if (length == 1):
+    elif (length == 1):
         stop = args[0]
     elif (length == 2):
         start, stop = args
@@ -77,16 +77,102 @@ def range_length(*args):
 def max_diff(iterable):
     """
     Return max difference by keeping track of the previous minimum.
+    iterable must have >= 2 elements.
 
     Uses the previous minimum to calculate a new difference and update
     the current max difference if it is bigger.
     """
 
-    mini = float("inf")
-    max_diff = -float("inf")
+    iterable = iter(iterable)
+    try:
+        e0 = next(iterable)
+        e1 = next(iterable)
+    except StopIteration:
+        raise ValueError("iterable must have >= 2 elements.")
+    mini = min(e0, e1)
+    max_diff = e1 - e0
     for e in iterable:
         # find max_diff using PREVIOUS minimum
         max_diff = max(max_diff, e - mini)
         # after finding current max_diff, can update the previous minimum
         mini = min(mini, e)
     return max_diff
+
+def max_diff_reversed(iterable):
+    """
+    Return the reversed max difference by keeping track of the previous
+    maximum. iterable must have >= 2 elements.
+    The reversed max difference equivalent to max_diff(reversed(iterable)),
+    but this does not require reversing the iterable, which might require
+    extra space to reverse if it is not a sequence.
+    max_diff_reversed(reversed(iterable)) is equivalent to
+    max_diff(iterable) but max_diff_reversed just works backwards.
+
+    Uses the previous maximum to calculate a new difference and update
+    the current max difference if it is bigger.
+    """
+
+    iterable = iter(iterable)
+    try:
+        e0 = next(iterable)
+        e1 = next(iterable)
+    except StopIteration:
+        raise ValueError("iterable must have >= 2 elements.")
+    maxi = max(e0, e1)
+    max_diff = e0 - e1
+    for e in iterable:
+        # find max_diff using PREVIOUS maximum
+        max_diff = max(max_diff, maxi - e)
+        # after finding current max_diff, can update the previous maximum
+        maxi = max(maxi, e)
+    return max_diff
+
+def max_diff_generator(iterable):
+    """
+    Generate the max difference so far by keeping track of the previous minimum.
+    iterable must have >= 2 elements.
+
+    Uses the previous minimum to calculate a new difference and update
+    the current max difference if it is bigger.
+    """
+
+    iterable = iter(iterable)
+    try:
+        e0 = next(iterable)
+        e1 = next(iterable)
+    except StopIteration:
+        raise ValueError("iterable must have >= 2 elements.")
+    mini = min(e0, e1)
+    max_diff = e1 - e0
+    yield max_diff
+    for e in iterable:
+        # find max_diff using PREVIOUS minimum
+        max_diff = max(max_diff, e - mini)
+        yield max_diff
+        # after finding current max_diff, can update the previous minimum
+        mini = min(mini, e)
+
+def max_diff_reversed_generator(iterable):
+    """
+    Generate the reversed max difference so far by keeping track of the
+    previous maximum. iterable must have >= 2 elements.
+
+    Uses the previous maximum to calculate a new difference and update
+    the current max difference if it is bigger.
+    """
+
+    iterable = iter(iterable)
+    try:
+        e0 = next(iterable)
+        e1 = next(iterable)
+    except StopIteration:
+        raise ValueError("iterable must have >= 2 elements.")
+    maxi = max(e0, e1)
+    max_diff = e0 - e1
+    yield max_diff
+    for e in iterable:
+        # find max_diff using PREVIOUS maximum
+        max_diff = max(max_diff, maxi - e)
+        yield max_diff
+        # after finding current max_diff, can update the previous maximum
+        maxi = max(maxi, e)
