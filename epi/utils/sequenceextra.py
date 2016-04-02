@@ -6,8 +6,8 @@ def sequence_islice(sequence, *args):
     or step are None, they default to end values or a single step.
     You can actually just use Python slice notation sequence[::] or
     itertools.islice(). slice notation is the fastest and itertools.islice()
-    is the second fastest. sequence_islice is the slowest. This is probably
-    because the Python slice notation and itertools.islice is written in C.
+    is the second fastest. sequence_islice() is the slowest. This is probably
+    because the Python slice notation and itertools.islice() is written in C.
     This function turns out to be useless.
     """
 
