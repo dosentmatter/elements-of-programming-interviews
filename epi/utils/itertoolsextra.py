@@ -176,3 +176,14 @@ def max_diff_reversed_generator(iterable):
         yield max_diff
         # after finding current max_diff, can update the previous maximum
         maxi = max(maxi, e)
+
+def enumerate_step(iterable, start=0, step=1):
+    """
+    Return an iterator that enumerates iterable with step from start.
+    Works the same as Python's enumerate() but has a step.
+    """
+
+    if (step == 1):
+        return enumerate(iterable, start)
+    else:
+        return izip(count(start, step), iterable)
