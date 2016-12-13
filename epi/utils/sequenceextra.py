@@ -8,7 +8,10 @@ def sequence_islice(sequence, *args):
     itertools.islice(). slice notation is the fastest and itertools.islice()
     is the second fastest. sequence_islice() is the slowest. This is probably
     because the Python slice notation and itertools.islice() is written in C.
-    This function turns out to be useless.
+    This function turns out to be useless. itertools.islice() works with
+    arbitrary iterables and will iterate over all elements, throwing away
+    ones you don't want. slice notation for sequences is fast in almost all
+    cases and should be preferred.
     """
 
     length = len(args)
