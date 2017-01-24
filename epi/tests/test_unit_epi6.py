@@ -261,15 +261,15 @@ class P3_RobotMaxDiff_Test(unittest.TestCase):
 
         z_iterable = [0, 1, 2, 3, 4, 5]
         z_iterable = map(self.__class__.add_random_x_y_coordinates, z_iterable)
-        self.assertEquals(robot_max_diff(z_iterable), 5)
+        self.assertEqual(robot_max_diff(z_iterable), 5)
 
         z_iterable = [0, 1, 99, 3, 4, 5]
         z_iterable = map(self.__class__.add_random_x_y_coordinates, z_iterable)
-        self.assertEquals(robot_max_diff(z_iterable), 99)
+        self.assertEqual(robot_max_diff(z_iterable), 99)
 
         z_iterable = [12, 21, 5, 54, 6, 2, 6]
         z_iterable = map(self.__class__.add_random_x_y_coordinates, z_iterable)
-        self.assertEquals(robot_max_diff(z_iterable), 49)
+        self.assertEqual(robot_max_diff(z_iterable), 49)
 
     @staticmethod
     def add_random_x_y_coordinates(z):
