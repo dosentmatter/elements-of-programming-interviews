@@ -594,7 +594,7 @@ class AbstractColoredPoint(AbstractPoint):
                      color=python.Parameter.OTHER_ARGUMENT):
         """
         Return a shallow copy of self. The type of object returned
-        is the same as the type of self. If x, y, or color is passed, 
+        is the same as the type of self. If x, y, or color is passed,
         set the x, y, or color in the copy.
         """
 
@@ -840,7 +840,7 @@ class Rectangle:
                                       Point.Region.NEGATIVE_X)
         upper_right_create_regions = (Point.Region.QUADRANT3,
                                       Point.Region.NEGATIVE_Y)
-        if (vector_region in lower_left_create_regions): 
+        if (vector_region in lower_left_create_regions):
             return cls.create_from_lower_left(point0, width, height)
         elif (vector_region in lower_right_create_regions):
             return cls.create_from_lower_right(point0, width, height)
@@ -1027,7 +1027,7 @@ class Rectangle:
         |     |
         |_____|
         A     B
-        
+
         Another shape is
         Direction0: ADBC, DBCA, BCAD, CADB
         Direction1: ACBD, CBDA, BDAC, DACB

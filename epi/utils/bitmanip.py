@@ -479,7 +479,7 @@ def log2(x):
     Finds the highest amount x can be rightshifted by a multiple of 2.
     Then goes downwards looking for any amounts x can still be rightshifted.
     If x has multiple 1-bits, the most significant one will be used.
-    
+
     Example:
     x == 1 << 59
     59 == 0b11 1011    # binary

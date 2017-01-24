@@ -13,7 +13,7 @@ def range_length(*args):
     start == 0
     stop == 12
     step == 3
-    
+
     Here is the range of items:
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
     |        |        |        |

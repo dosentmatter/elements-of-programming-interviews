@@ -454,7 +454,7 @@ class P2_UninitializedArray:
         Notice that index_initialize_times is just the opposite mapping
         of initialize_time_indices. index_initialize_times is used to speed
         up the search to see if an index has been initialized. Instead of doing
-        an O(n) search through initialize_time_indices when doing a read, we 
+        an O(n) search through initialize_time_indices when doing a read, we
         index into index_initialize_times and use the initialize_time
         given see if the index has been written.
 

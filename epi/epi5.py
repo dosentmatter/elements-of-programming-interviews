@@ -446,7 +446,7 @@ class P5_1_Subsets:
         use helper_add() for k == 0, 1, 2
         use helper_remove() for k == 3, 4
 
-        This is the fastest because it doesn't waste time 
+        This is the fastest because it doesn't waste time
         """
 
         if not isinstance(S, set):
@@ -1034,7 +1034,7 @@ class P13_MultiplicationBitwise:
     Multiply two unsigned integers using only assignment, bitwise
     operators, loops, and conditionals.
     """
-    
+
     @staticmethod
     def multiply_bitwise(x, y):
         """

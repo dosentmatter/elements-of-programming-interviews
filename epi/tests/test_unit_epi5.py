@@ -148,26 +148,26 @@ class P4_ClosestSameBits_Test(unittest.TestCase):
         self.assertEqual(first_consecutive_diff_bitmanip(5), 6)
         self.assertEqual(first_consecutive_diff_bitmanip(9), 10)
         self.assertEqual(first_consecutive_diff_bitmanip(12), 10)
-        
+
 class P5_Powerset_Test(unittest.TestCase):
 
     def setUp(self):
         self.cls = P5_Powerset
-        
+
         f = frozenset
-        
+
         self.SETS = []
         self.POWERSETS = []
-        
+
         self.SETS.append({})
         self.POWERSETS.append({ f({}) })
-        
+
         self.SETS.append({0})
         self.POWERSETS.append({ f({}), f({0}) })
-        
+
         self.SETS.append({0, 1})
         self.POWERSETS.append({ f({}), f({0}), f({1}), f({0, 1}) })
-        
+
         self.SETS.append({0, 1, 2})
         self.POWERSETS.append({ f({}), f({0}), f({1}), f({0, 1}),
                          f({2}), f({0, 2}), f({1, 2}), f({0, 1, 2}) })
@@ -227,21 +227,21 @@ class P5_1_Subsets_Test(unittest.TestCase):
 
     def setUp(self):
         self.cls = P5_1_Subsets
-        
+
         f = frozenset
-        
+
         self.SETS = []
         self.SUBSETS_LIST = []
-        
+
         self.SETS.append({})
         self.SUBSETS_LIST.append({ f({}) })
-        
+
         self.SETS.append({0})
         self.SUBSETS_LIST.append({ f({}), f({0}) })
-        
+
         self.SETS.append({0, 1})
         self.SUBSETS_LIST.append({ f({}), f({0}), f({1}), f({0, 1}) })
-        
+
         self.SETS.append({0, 1, 2})
         self.SUBSETS_LIST.append({ f({}), f({0}), f({1}), f({0, 1}),
                          f({2}), f({0, 2}), f({1, 2}), f({0, 1, 2}) })
@@ -273,7 +273,7 @@ class P5_1_Subsets_Test(unittest.TestCase):
             random_subset_length = random.randint(0, random_set_length)
 
             number_subsets = len(bit_array_map(S, random_subset_length))
-            self.assertEqual(number_subsets, 
+            self.assertEqual(number_subsets,
                   mathextra.n_choose_r(random_set_length, random_subset_length))
 
     def test_recursive_default(self):
@@ -296,7 +296,7 @@ class P5_1_Subsets_Test(unittest.TestCase):
             random_subset_length = random.randint(0, random_set_length)
 
             number_subsets = len(recursive_default(S, random_subset_length))
-            self.assertEqual(number_subsets, 
+            self.assertEqual(number_subsets,
                   mathextra.n_choose_r(random_set_length, random_subset_length))
 
     def test_recursive_choice(self):
@@ -319,7 +319,7 @@ class P5_1_Subsets_Test(unittest.TestCase):
             random_subset_length = random.randint(0, random_set_length)
 
             number_subsets = len(recursive_choice(S, random_subset_length))
-            self.assertEqual(number_subsets, 
+            self.assertEqual(number_subsets,
                   mathextra.n_choose_r(random_set_length, random_subset_length))
 
 class P6_StringIntegerConversion_Test(unittest.TestCase):
@@ -411,16 +411,16 @@ class P9_EliasGammaCoding_Test(unittest.TestCase):
 
         self.LISTS = []
         self.CODESTRINGS = []
-        
+
         self.LISTS.append([])
         self.CODESTRINGS.append("")
-        
+
         self.LISTS.append([13])
         self.CODESTRINGS.append("0001101")
-        
+
         self.LISTS.append([13, 14])
         self.CODESTRINGS.append("00011010001110")
-        
+
         self.LISTS.append([1, 78, 30])
         self.CODESTRINGS.append("10000001001110000011110")
 
