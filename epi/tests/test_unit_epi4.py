@@ -14,10 +14,12 @@ class P1_MaxDiff_Test(unittest.TestCase):
         previous_min = self.cls.previous_min
 
         NUM_TESTS_RUN = 1000
+        MIN_MAX_DIFF_LIST_LENGTH = 2
         MAX_LIST_LENGTH = 100
         MAX_LIST_NUMBER = 100
         for _ in range(NUM_TESTS_RUN):
-            random_list_length = random.randint(0, MAX_LIST_LENGTH)
+            random_list_length = random.randint(MIN_MAX_DIFF_LIST_LENGTH,
+                                                MAX_LIST_LENGTH)
             random_list = \
                 randomextra.randlist_duplicates(MAX_LIST_NUMBER,
                                                 random_list_length)
