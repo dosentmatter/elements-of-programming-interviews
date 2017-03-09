@@ -462,8 +462,9 @@ class P5_1_Subsets:
             size k. Start with an empty subset and keep adding.
 
             Each element defaults to not in the current subset. This is why
-            subsets are added at each call to helper_add() if the
-            size == k - elements not added are defaulted.
+            subsets are added when subset_length == k, since the elements
+            that are not added to the subset are defaulted to not being in the
+            subset.
 
             This is a pruned version of the P5_Powerset version. The first if
             case limits subset_length to be <= k for this function. In the
@@ -496,8 +497,9 @@ class P5_1_Subsets:
             size k. Start with an empty subset and keep removing.
 
             Each element defaults to in the current subset. This is why
-            subsets are added at each call to helper_remove() if the
-            size == k- elements not removed are defaulted.
+            subsets are added when subset_length == k, since the elements
+            that are not removed from the subset are defaulted to being in the
+            subset.
 
             This is a pruned version of the P5_Powerset version. The first if
             case limits subset_length to be >= k for this function. In the
@@ -570,10 +572,10 @@ class P5_1_Subsets:
             Populate subsets with the subsets of the elements L[start_i:] of
             size k.
 
-            At each call of helper(), two choices are made to include and not
-            include the current element of the set into the subset. This
-            is why subset is only added to subset at the end of the
-            call stack when the size == k, since a choice is made for
+            At each call of helper_add(), two choices are made to include and
+            not include the current element of the set into the subset. This
+            is why subset is only added to subsets at the end of the
+            call stack when the subset_length == k, since a choice is made for
             all elements. The ones that haven't been added explicitly default
             to not in the set.
 
@@ -607,11 +609,11 @@ class P5_1_Subsets:
             Populate subsets with the subsets of the elements L[start_i:] of
             size k.
 
-            At each call of helper(), two choices are made to not include and
-            include the current element of the set into the subset. This
-            is why subset is only added to subset at the end of the
-            call stack when the size == k, since a choice is made for all
-            elements. The ones that haven't been removed explicitly default
+            At each call of helper_remove(), two choices are made to not include
+            and include the current element of the set into the subset. This
+            is why subset is only added to subsets at the end of the
+            call stack when the subset_length == k, since a choice is made for
+            all elements. The ones that haven't been removed explicitly default
             to in the set.
 
             This is a pruned version of the P5_Powerset version. The first if
