@@ -134,6 +134,9 @@ def max_diff_generator(iterable):
 
     Uses the previous minimum to calculate a new difference and update
     the current max difference if it is bigger.
+
+    Note that the generator will have 1 element less than the iterable because
+    there are k-1 possible differences in a iterable of size k.
     """
 
     iterable = iter(iterable)
@@ -159,6 +162,9 @@ def max_diff_reversed_generator(iterable):
 
     Uses the previous maximum to calculate a new difference and update
     the current max difference if it is bigger.
+
+    Note that the generator will have 1 element less than the iterable because
+    there are k-1 possible differences in a iterable of size k.
     """
 
     iterable = iter(iterable)
