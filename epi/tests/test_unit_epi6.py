@@ -307,6 +307,22 @@ class P4_GeneralizedMaxDiff_Test(unittest.TestCase):
         number_of_pairs = 4
         self.assertEqual(generalized_max_diff(numbers, number_of_pairs), 13)
 
+        numbers = [10, 22, 5, 75, 65, 80]
+        number_of_pairs = 2
+        self.assertEqual(generalized_max_diff(numbers, number_of_pairs), 87)
+
+        numbers = [12, 14, 17, 10, 14, 13, 12, 15]
+        number_of_pairs = 3
+        self.assertEqual(generalized_max_diff(numbers, number_of_pairs), 12)
+
+        numbers = [100, 30, 15, 10, 8, 25, 80]
+        number_of_pairs = 3
+        self.assertEqual(generalized_max_diff(numbers, number_of_pairs), 38)
+
+        numbers = [90, 80, 70, 60, 50]
+        number_of_pairs = 1
+        self.assertEqual(generalized_max_diff(numbers, number_of_pairs), -10)
+
         numbers = list(range(10))
         number_of_pairs = 5
         self.assertEqual(generalized_max_diff(numbers, number_of_pairs), 5)
