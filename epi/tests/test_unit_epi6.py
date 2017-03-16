@@ -279,6 +279,42 @@ class P3_RobotMaxDiff_Test(unittest.TestCase):
 
         return mathextra.ThreeDimensionalPoint(x, y, z)
 
+class P4_GeneralizedMaxDiff_Test(unittest.TestCase):
+
+    def setUp(self):
+        self.cls = P4_GeneralizedMaxDiff
+
+    def test_generalized_max_diff(self):
+        generalized_max_diff = self.cls.generalized_max_diff
+
+        numbers = [0, 1, 2, 3, 4]
+        number_of_pairs = 2
+        self.assertEqual(generalized_max_diff(numbers, number_of_pairs), 3)
+
+        numbers = [3, 8, 2, 9, 1, 4, 5]
+        number_of_pairs = 3
+        self.assertEqual(generalized_max_diff(numbers, number_of_pairs), 16)
+
+        numbers = [1, 0, 2, 4, 6]
+        number_of_pairs = 2
+        self.assertEqual(generalized_max_diff(numbers, number_of_pairs), 4)
+
+        numbers = [1, 0, 1, 4, 9]
+        number_of_pairs = 2
+        self.assertEqual(generalized_max_diff(numbers, number_of_pairs), 7)
+
+        numbers = [2, 3, 2, 3, 5, 1, 5, 6, 4, 8]
+        number_of_pairs = 4
+        self.assertEqual(generalized_max_diff(numbers, number_of_pairs), 13)
+
+        numbers = list(range(10))
+        number_of_pairs = 5
+        self.assertEqual(generalized_max_diff(numbers, number_of_pairs), 5)
+
+        numbers = list(range(10))
+        number_of_pairs = 4
+        self.assertEqual(generalized_max_diff(numbers, number_of_pairs), 6)
+
 def main():
     unittest.main()
 

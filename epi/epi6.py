@@ -615,3 +615,92 @@ class P3_RobotMaxDiff:
         z_coordinates = \
                 map(operator.attrgetter("z"), points)
         return itertoolsextra.max_diff(z_coordinates)
+
+class P4_GeneralizedMaxDiff:
+    """
+    Compute the maximum value of
+    Sigma((pair_index=[0, number_of_pairs-1]),
+    numbers[j_pair_index] - numbers[i_pair_index]),
+    subject to
+    i_0 < j_0 < i_1 < j_1 < ... <
+    i_(number_of_pairs-1) < j_(number_of_pairs-1)
+    Sigma is the capital sigma for summation notation.
+    """
+
+    @staticmethod
+    def generalized_max_diff(numbers, number_of_pairs):
+        """
+        """
+
+        if (number_of_pairs < 1):
+            raise ValueError("number_of_pairs must be >= 1.")
+        elif (number_of_pairs == 1):
+            return itertoolsextra.max_diff(numbers)
+        else:
+            pair_index = 0
+
+            NUMBERS_LENGTH = len(numbers)
+            PAIR_SIZE = 2
+            LAST_PAIR_INDEX = number_of_pairs - 1
+            number_of_pairs_left = LAST_PAIR_INDEX - pair_index
+
+            sliding_window_start = 0
+            sliding_window_end = \
+                NUMBERS_LENGTH - PAIR_SIZE * number_of_pairs_left
+
+            max_diffs = \
+                list(
+                    itertoolsextra.max_diff_generator(
+                        numbers[sliding_window_start:sliding_window_end]
+                    )
+                )
+            MAX_DIFFS_LENGTH = len(max_diffs)
+
+            for pair_index in range(1, LAST_PAIR_INDEX):
+                sliding_window_start += PAIR_SIZE
+                sliding_window_end += PAIR_SIZE
+
+                for i in range(MAX_DIFFS_LENGTH):
+                    reversed_shrinking_window_current_max_diffs = \
+                        itertoolsextra.max_diff_reversed_generator(
+                            reversed(
+                                numbers[sliding_window_start:
+                                        sliding_window_end - i]
+                            )
+                        )
+                    reversed_shrinking_window_last_max_diffs = \
+                        reversed(
+                            max_diffs[:MAX_DIFFS_LENGTH - i]
+                        )
+                    max_diffs[-1 - i] = \
+                        max(
+                            map(
+                                operator.add,
+                                reversed_shrinking_window_current_max_diffs,
+                                reversed_shrinking_window_last_max_diffs
+                            )
+                        )
+
+            pair_index = LAST_PAIR_INDEX
+
+            sliding_window_start += PAIR_SIZE
+            sliding_window_end += PAIR_SIZE
+
+            reversed_shrinking_window_current_max_diffs = \
+                itertoolsextra.max_diff_reversed_generator(
+                    reversed(
+                        numbers[sliding_window_start:sliding_window_end]
+                    )
+                )
+            reversed_shrinking_window_last_max_diffs = \
+                reversed(
+                    max_diffs[:MAX_DIFFS_LENGTH]
+                )
+            return \
+                max(
+                    map(
+                        operator.add,
+                        reversed_shrinking_window_current_max_diffs,
+                        reversed_shrinking_window_last_max_diffs
+                    )
+                )
