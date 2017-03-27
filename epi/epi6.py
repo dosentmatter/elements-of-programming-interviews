@@ -601,7 +601,7 @@ class P3_RobotMaxDiff:
     to a Joule of electrical energy. The battery has a limited
     capacity and once it reaches its capacity, the energy generated
     in descending is lost.
-    Design an algorithm that taks a sequence of n three-dimensional
+    Design an algorithm that takes a sequence of n three-dimensional
     coordinates to be traversed, and returns the minimum battery
     capacity needed to complete the journey. The robot begins with
     a fully charged battery.
@@ -610,6 +610,21 @@ class P3_RobotMaxDiff:
     @staticmethod
     def robot_max_diff(points):
         """
+        Compute the minimum battery capacity needed to complete the journey.
+
+        The potential energy only corresponds to the z-coordinate so we can
+        ignore x and y.
+
+        The minimum battery capacity is just the max difference of the
+        potential energy of the points. Energy charged from going down
+        will cancel out with the energy used going back up. Going down can
+        waste energy if the battery is full because the battery can't be
+        charged. No matter what the rest of the path is from the lowest
+        z-coordinate, the robot's battery capacity must have enough
+        energy to ascend to past or to the highest z-coordinate.
+        This is the minimum battery capacity. Climbing any smaller
+        ascents will just be charged back from the next descent so only the
+        minimum and maximum z-coordinate affects the minimum battery capacity.
         """
 
         z_coordinates = \
